@@ -4,6 +4,7 @@
 #include "http_server.h"
 #include "ir_remote.h"
 #include "led_control.h"
+#include "machine_control.h"
 #include "motor_control.h"
 #include "spiffs_fs.h"
 #include "wifi_ap.h"
@@ -19,6 +20,7 @@ void app_main(void)
 {
 	ESP_ERROR_CHECK(led_control_init());
 	ESP_ERROR_CHECK(motor_control_init());
+	ESP_ERROR_CHECK(machine_control_init());
 	ESP_ERROR_CHECK(ir_remote_start());
 	ESP_ERROR_CHECK(spiffs_fs_init());
 	ESP_ERROR_CHECK(wifi_ap_start());

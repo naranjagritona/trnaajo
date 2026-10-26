@@ -4,12 +4,16 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
 
-#define MOTOR_GPIO GPIO_NUM_16
-#define LED_YELLOW_GPIO GPIO_NUM_27
-#define LED_RED_GPIO GPIO_NUM_26
-#define LED_GREEN_GPIO GPIO_NUM_25
+#include "board_pins.h"
+#include "gpio_port.h"
 
-static bool motor_is_on;
+typedef enum {
+    MOTOR_STATE_OFF,
+    MOTOR_STATE_ON,
+} motor_state_t;
+
+static motor_state_t motor_state;
+static uint32_t motor_port_state;
 static portMUX_TYPE motor_state_lock = portMUX_INITIALIZER_UNLOCKED;
 
 /*
@@ -19,10 +23,7 @@ static portMUX_TYPE motor_state_lock = portMUX_INITIALIZER_UNLOCKED;
 esp_err_t motor_control_init(void)
 {
     const gpio_config_t config = {
-        .pin_bit_mask = (1ULL << MOTOR_GPIO) |
-                (1ULL << LED_YELLOW_GPIO) |
-                (1ULL << LED_RED_GPIO) |
-                (1ULL << LED_GREEN_GPIO),
+        .pin_bit_mask = 1ULL << BOARD_MOTOR_GPIO,
         .mode = GPIO_MODE_OUTPUT,
         .pull_up_en = GPIO_PULLUP_DISABLE,
         .pull_down_en = GPIO_PULLDOWN_DISABLE,
@@ -34,9 +35,6 @@ esp_err_t motor_control_init(void)
         return err;
     }
 
-    gpio_set_level(LED_YELLOW_GPIO, 0);
-    gpio_set_level(LED_RED_GPIO, 0);
-    gpio_set_level(LED_GREEN_GPIO, 0);
     return motor_control_set(false);
 }
 
@@ -45,10 +43,13 @@ esp_err_t motor_control_init(void)
  */
 esp_err_t motor_control_set(bool on)
 {
+    motor_state_t next_state = on ? MOTOR_STATE_ON : MOTOR_STATE_OFF;
+
     portENTER_CRITICAL(&motor_state_lock);
-    esp_err_t err = gpio_set_level(MOTOR_GPIO, on ? 1 : 0);
+    esp_err_t err = gpio_port_write(&motor_port_state, BOARD_MOTOR_PORT_MASK,
+                                    BOARD_MOTOR_GPIO, next_state == MOTOR_STATE_ON);
     if (err == ESP_OK) {
-        motor_is_on = on;
+        motor_state = next_state;
     }
     portEXIT_CRITICAL(&motor_state_lock);
 
@@ -61,10 +62,11 @@ esp_err_t motor_control_set(bool on)
 esp_err_t motor_control_toggle(void)
 {
     portENTER_CRITICAL(&motor_state_lock);
-    bool next = !motor_is_on;
-    esp_err_t err = gpio_set_level(MOTOR_GPIO, next ? 1 : 0);
+    motor_state_t next_state = motor_state == MOTOR_STATE_ON ? MOTOR_STATE_OFF : MOTOR_STATE_ON;
+    esp_err_t err = gpio_port_write(&motor_port_state, BOARD_MOTOR_PORT_MASK,
+                                    BOARD_MOTOR_GPIO, next_state == MOTOR_STATE_ON);
     if (err == ESP_OK) {
-        motor_is_on = next;
+        motor_state = next_state;
     }
     portEXIT_CRITICAL(&motor_state_lock);
     return err;
@@ -76,7 +78,7 @@ esp_err_t motor_control_toggle(void)
 bool motor_control_is_on(void)
 {
     portENTER_CRITICAL(&motor_state_lock);
-    bool on = motor_is_on;
+    bool on = motor_state == MOTOR_STATE_ON;
     portEXIT_CRITICAL(&motor_state_lock);
     return on;
 }

@@ -7,16 +7,19 @@
 #include "driver/gpio.h"
 #include "driver/rmt_rx.h"
 #include "esp_log.h"
+#include "esp_timer.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include "freertos/task.h"
 
 #include "led_control.h"
+#include "machine_control.h"
 #include "motor_control.h"
+#include "board_pins.h"
 
-#define IR_RECEIVER_GPIO GPIO_NUM_23
 #define IR_RESOLUTION_HZ 1000000
 #define IR_SYMBOL_BUFFER_SIZE 80
+#define IR_COMMAND_DEBOUNCE_US 300000
 
 static const char *TAG = "IR_REMOTE";
 static rmt_channel_handle_t rx_channel;
@@ -143,26 +146,38 @@ static bool decode_nec_command(size_t symbol_count, uint32_t *code)
 static void ir_remote_task(void *argument)
 {
     (void)argument;
+    uint32_t last_code = 0;
+    int64_t last_code_time_us = 0;
 
     for (;;) {
         size_t symbol_count = 0;
         if (xQueueReceive(rx_queue, &symbol_count, portMAX_DELAY) == pdTRUE) {
             uint32_t code;
             if (decode_nec_command(symbol_count, &code)) {
-                ESP_LOGI(TAG, "Comando NEC recibido: 0x%08" PRIX32 " (%s)",
-                         code, get_button_name(code));
-                if (code == 0xF30CFF00) {
-                    esp_err_t err = led_control_toggle();
-                    if (err == ESP_OK) {
-                        ESP_LOGI(TAG, "Tecla 1: luces GPIO22 %s",
-                                 led_control_is_on() ? "encendidas" : "apagadas");
-                    } else {
-                        ESP_LOGE(TAG, "No se pudo cambiar GPIO22: 0x%x", err);
-                    }
-                } else if (code == 0xE718FF00) {
-                    esp_err_t err = motor_control_toggle();
-                    if (err != ESP_OK) {
-                        ESP_LOGE(TAG, "No se pudo cambiar GPIO16: 0x%x", err);
+                int64_t now_us = esp_timer_get_time();
+                bool repeated_code = code == last_code &&
+                                    now_us - last_code_time_us < IR_COMMAND_DEBOUNCE_US;
+                last_code_time_us = now_us;
+
+                if (!repeated_code) {
+                    last_code = code;
+                    ESP_LOGI(TAG, "Comando NEC recibido: 0x%08" PRIX32 " (%s)",
+                             code, get_button_name(code));
+                    if (code == 0xF30CFF00) {
+                        esp_err_t err = led_control_toggle();
+                        if (err == ESP_OK) {
+                            ESP_LOGI(TAG, "Tecla 1: luces GPIO22 %s",
+                                     led_control_is_on() ? "encendidas" : "apagadas");
+                        } else {
+                            ESP_LOGE(TAG, "No se pudo cambiar GPIO22: 0x%x", err);
+                        }
+                    } else if (code == 0xE718FF00) {
+                        esp_err_t err = motor_control_toggle();
+                        if (err != ESP_OK) {
+                            ESP_LOGE(TAG, "No se pudo cambiar GPIO16: 0x%x", err);
+                        }
+                    } else if (code == 0xA15EFF00) {
+                        machine_control_toggle();
                     }
                 }
             }
@@ -189,7 +204,7 @@ esp_err_t ir_remote_start(void)
     }
 
     const rmt_rx_channel_config_t channel_config = {
-        .gpio_num = IR_RECEIVER_GPIO,
+        .gpio_num = BOARD_IR_RECEIVER_GPIO,
         .clk_src = RMT_CLK_SRC_DEFAULT,
         .resolution_hz = IR_RESOLUTION_HZ,
         .mem_block_symbols = 64,
@@ -224,6 +239,6 @@ esp_err_t ir_remote_start(void)
         return ESP_ERR_NO_MEM;
     }
 
-    ESP_LOGI(TAG, "Receptor IR listo en GPIO%d (NEC)", IR_RECEIVER_GPIO);
+    ESP_LOGI(TAG, "Receptor IR listo en GPIO%d (NEC)", BOARD_IR_RECEIVER_GPIO);
     return ESP_OK;
 }

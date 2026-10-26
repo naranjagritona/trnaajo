@@ -2,6 +2,7 @@ idf_component_register(
     SRCS
         "main.c"
         "led_control.c"
+        "machine_control.c"
         "motor_control.c"
         "ir_remote.c"
         "wifi_ap.c"
@@ -14,6 +15,7 @@ idf_component_register(
         esp_driver_rmt
         esp_http_server
         esp_netif
+        esp_timer
         esp_wifi
         nvs_flash
         spiffs
