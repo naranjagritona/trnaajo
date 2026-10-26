@@ -8,6 +8,10 @@
 static const char *TAG = "SPIFFS_FS";
 static bool mounted;
 
+/*
+ * Monta la partición SPIFFS para poder leer archivos web estáticos.
+ * Estos archivos son la interfaz HTML, CSS y JS del panel de control.
+ */
 esp_err_t spiffs_fs_init(void)
 {
     if (mounted) {

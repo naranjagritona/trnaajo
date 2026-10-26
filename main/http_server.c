@@ -27,6 +27,10 @@ static const static_file_t script_file = {
     .content_type = "application/javascript; charset=utf-8",
 };
 
+/*
+ * Sirve la página principal del dashboard en formato HTML.
+ * Lee index.html desde SPIFFS y lo envía al navegador.
+ */
 static esp_err_t root_get_handler(httpd_req_t *req)
 {
     FILE *page = fopen("/spiffs/index.html", "r");
@@ -54,6 +58,10 @@ static esp_err_t root_get_handler(httpd_req_t *req)
     return httpd_resp_send_chunk(req, NULL, 0);
 }
 
+/*
+ * Sirve archivos estáticos como CSS y JS desde SPIFFS.
+ * Usa el user_ctx para saber qué recurso concreto devolver.
+ */
 static esp_err_t static_file_get_handler(httpd_req_t *req)
 {
     const static_file_t *asset = req->user_ctx;
@@ -86,6 +94,10 @@ static esp_err_t static_file_get_handler(httpd_req_t *req)
     return httpd_resp_send_chunk(req, NULL, 0);
 }
 
+/*
+ * Maneja los POST para encender o apagar el LED.
+ * El estado esperado viene en user_ctx y se aplica con led_control_set().
+ */
 static esp_err_t led_post_handler(httpd_req_t *req)
 {
     const bool *desired_state = req->user_ctx;
@@ -103,6 +115,10 @@ static esp_err_t led_post_handler(httpd_req_t *req)
     return httpd_resp_send(req, NULL, 0);
 }
 
+/*
+ * Maneja los POST para encender o apagar el motor.
+ * Reutiliza la misma lógica que el LED pero apuntando al controlador del motor.
+ */
 static esp_err_t motor_post_handler(httpd_req_t *req)
 {
     const bool *desired_state = req->user_ctx;
@@ -168,6 +184,10 @@ static const httpd_uri_t motor_off_uri = {
     .user_ctx = (void *)&turn_led_off,
 };
 
+/*
+ * Inicia el servidor HTTP y registra todas sus rutas.
+ * Si aparece un error al registrar una ruta, se limpia la instancia y se devuelve el error.
+ */
 esp_err_t http_server_start(void)
 {
     if (server != NULL) {

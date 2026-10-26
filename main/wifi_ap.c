@@ -14,6 +14,11 @@
 
 static const char *TAG = "WIFI_AP";
 
+/*
+ * Configura el ESP32 como punto de acceso Wi‑Fi.
+ * Esto permite que un celular o PC se conecte a la red del dispositivo
+ * y abra la interfaz web del dashboard.
+ */
 esp_err_t wifi_ap_start(void)
 {
     esp_err_t err = nvs_flash_init();

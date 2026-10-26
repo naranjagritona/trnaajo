@@ -9,6 +9,10 @@
 static bool led_is_on;
 static portMUX_TYPE led_state_lock = portMUX_INITIALIZER_UNLOCKED;
 
+/*
+ * Configura el GPIO del LED como salida digital.
+ * Luego deja el LED apagado al arrancar.
+ */
 esp_err_t led_control_init(void)
 {
     const gpio_config_t config = {
@@ -27,6 +31,10 @@ esp_err_t led_control_init(void)
     return led_control_set(false);
 }
 
+/*
+ * Establece el estado del LED.
+ * true = encendido, false = apagado.
+ */
 esp_err_t led_control_set(bool on)
 {
     portENTER_CRITICAL(&led_state_lock);
@@ -39,6 +47,10 @@ esp_err_t led_control_set(bool on)
     return err;
 }
 
+/*
+ * Invierte el estado actual del LED.
+ * Útil para controles por botón o remoto IR.
+ */
 esp_err_t led_control_toggle(void)
 {
     portENTER_CRITICAL(&led_state_lock);
@@ -51,6 +63,9 @@ esp_err_t led_control_toggle(void)
     return err;
 }
 
+/*
+ * Devuelve el estado actual del LED sin modificar el hardware.
+ */
 bool led_control_is_on(void)
 {
     portENTER_CRITICAL(&led_state_lock);

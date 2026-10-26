@@ -27,12 +27,20 @@ static const rmt_receive_config_t receive_config = {
     .signal_range_max_ns = 12000000,
 };
 
+/*
+ * Comprueba si un valor está dentro de un margen aceptable respecto a un objetivo.
+ * Se usa para tolerar pequeñas variaciones en la duración de los pulsos IR.
+ */
 static bool near(uint32_t value, uint32_t target, uint32_t tolerance)
 {
     return (value > (target - tolerance)) &&
            (value < (target + tolerance));
 }
 
+/*
+ * Traduce un código NEC recibido al nombre del botón correspondiente.
+ * Esto ayuda a depurar y saber qué acción está disparando el remoto.
+ */
 static const char *get_button_name(uint32_t code)
 {
     switch (code) {
@@ -67,6 +75,10 @@ static const char *get_button_name(uint32_t code)
     }
 }
 
+/*
+ * Callback ejecutado cuando termina una recepción IR.
+ * Encola la cantidad de símbolos recibidos para que la tarea principal los procese.
+ */
 static bool ir_receive_done_callback(rmt_channel_handle_t channel,
                                      const rmt_rx_done_event_data_t *event,
                                      void *user_data)
@@ -78,6 +90,10 @@ static bool ir_receive_done_callback(rmt_channel_handle_t channel,
     return higher_priority_task_woken == pdTRUE;
 }
 
+/*
+ * Decodifica un paquete NEC recibido desde el sensor IR.
+ * Verifica la cabecera del frame y la comprobación inversa del comando.
+ */
 static bool decode_nec_command(size_t symbol_count, uint32_t *code)
 {
     if (symbol_count < 33 || symbol_count > IR_SYMBOL_BUFFER_SIZE) {
@@ -120,6 +136,10 @@ static bool decode_nec_command(size_t symbol_count, uint32_t *code)
     return true;
 }
 
+/*
+ * Tarea principal del receptor IR.
+ * Espera códigos en la cola, los decodifica y ejecuta la acción asociada al botón.
+ */
 static void ir_remote_task(void *argument)
 {
     (void)argument;
@@ -157,6 +177,10 @@ static void ir_remote_task(void *argument)
     }
 }
 
+/*
+ * Inicializa el canal RMT para escuchar señales IR NEC en GPIO23.
+ * Crea la cola y la tarea encargada de procesar los códigos.
+ */
 esp_err_t ir_remote_start(void)
 {
     rx_queue = xQueueCreate(1, sizeof(size_t));

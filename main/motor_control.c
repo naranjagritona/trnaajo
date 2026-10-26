@@ -12,6 +12,10 @@
 static bool motor_is_on;
 static portMUX_TYPE motor_state_lock = portMUX_INITIALIZER_UNLOCKED;
 
+/*
+ * Inicializa todos los GPIO usados para el motor y sus indicadores LED.
+ * Se configura como salida y se deja todo apagado al inicio.
+ */
 esp_err_t motor_control_init(void)
 {
     const gpio_config_t config = {
@@ -36,6 +40,9 @@ esp_err_t motor_control_init(void)
     return motor_control_set(false);
 }
 
+/*
+ * Activa o desactiva el motor según el valor recibido.
+ */
 esp_err_t motor_control_set(bool on)
 {
     portENTER_CRITICAL(&motor_state_lock);
@@ -48,6 +55,9 @@ esp_err_t motor_control_set(bool on)
     return err;
 }
 
+/*
+ * Cambia el estado del motor de forma invertida al estado actual.
+ */
 esp_err_t motor_control_toggle(void)
 {
     portENTER_CRITICAL(&motor_state_lock);
@@ -60,6 +70,9 @@ esp_err_t motor_control_toggle(void)
     return err;
 }
 
+/*
+ * Consulta el estado actual del motor sin modificar el hardware.
+ */
 bool motor_control_is_on(void)
 {
     portENTER_CRITICAL(&motor_state_lock);

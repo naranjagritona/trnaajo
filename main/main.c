@@ -10,6 +10,11 @@
 
 static const char *TAG = "APP";
 
+/*
+ * Punto de entrada de la aplicación.
+ * Inicializa los periféricos del proyecto en el orden correcto
+ * y deja el sistema listo para recibir peticiones web y señales IR.
+ */
 void app_main(void)
 {
 	ESP_ERROR_CHECK(led_control_init());
