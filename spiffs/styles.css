@@ -185,6 +185,12 @@ p {
     transform: translateY(-1px);
 }
 
+.button:disabled {
+    cursor: wait;
+    opacity: .65;
+    transform: none;
+}
+
 .button-on {
     background: #3159d9;
     color: #fff;
