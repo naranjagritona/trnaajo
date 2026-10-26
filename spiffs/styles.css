@@ -136,6 +136,13 @@ p {
     font-size: 25px;
 }
 
+.alarm-icon {
+    background: #fff4e5;
+    color: #d97706;
+    font-size: 22px;
+    font-weight: 800;
+}
+
 .card-heading .eyebrow {
     margin-bottom: 4px;
 }

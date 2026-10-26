@@ -167,6 +167,25 @@ void machine_control_toggle(void)
     }
 }
 
+esp_err_t machine_control_set_enabled(bool enabled)
+{
+    machine_state_t next_state = enabled ? MACHINE_STATE_ON : MACHINE_STATE_OFF;
+
+    portENTER_CRITICAL(&machine_state_lock);
+    esp_err_t err = machine_control_write_outputs(next_state);
+    if (err == ESP_OK) {
+        machine_state = next_state;
+    }
+    portEXIT_CRITICAL(&machine_state_lock);
+
+    if (err == ESP_OK) {
+        ESP_LOGI(TAG, "Máquina %s", enabled ? "PRENDIDA" : "APAGADA");
+    } else {
+        ESP_LOGE(TAG, "No se pudo actualizar los indicadores: %s", esp_err_to_name(err));
+    }
+    return err;
+}
+
 esp_err_t machine_control_trigger(void)
 {
     portENTER_CRITICAL(&machine_state_lock);

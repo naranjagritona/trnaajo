@@ -3,13 +3,17 @@ document.querySelectorAll(".controls form").forEach((form) => {
         event.preventDefault();
 
         const button = form.querySelector('button[type="submit"]');
-        const status = form.closest(".device-card")?.querySelector(".device-status span:last-child");
-        if (!button || !status) {
+        const card = form.closest(".device-card");
+        const status = card?.querySelector(".device-status span:last-child");
+        const buttons = card?.querySelectorAll('button[type="submit"]');
+        if (!button || !status || !buttons) {
             return;
         }
 
-        const originalLabel = button.textContent;
-        button.disabled = true;
+        const originalLabels = Array.from(buttons, (cardButton) => cardButton.textContent);
+        buttons.forEach((cardButton) => {
+            cardButton.disabled = true;
+        });
         status.textContent = "Enviando comando...";
 
         try {
@@ -26,8 +30,10 @@ document.querySelectorAll(".controls form").forEach((form) => {
             status.textContent = "No se pudo enviar el comando.";
             console.error("Error al controlar el dispositivo:", error);
         } finally {
-            button.disabled = false;
-            button.textContent = originalLabel;
+            buttons.forEach((cardButton, index) => {
+                cardButton.disabled = false;
+                cardButton.textContent = originalLabels[index];
+            });
         }
     });
 });

@@ -19,7 +19,13 @@
 
 #define IR_RESOLUTION_HZ 1000000
 #define IR_SYMBOL_BUFFER_SIZE 80
-#define IR_COMMAND_DEBOUNCE_US 300000
+#define IR_COMMAND_DEBOUNCE_US 500000
+
+static const uint32_t action_codes[] = {
+    0xF30CFF00,
+    0xE718FF00,
+    0xA15EFF00,
+};
 
 static const char *TAG = "IR_REMOTE";
 static rmt_channel_handle_t rx_channel;
@@ -146,38 +152,44 @@ static bool decode_nec_command(size_t symbol_count, uint32_t *code)
 static void ir_remote_task(void *argument)
 {
     (void)argument;
-    uint32_t last_code = 0;
-    int64_t last_code_time_us = 0;
+    int64_t last_action_time_us[sizeof(action_codes) / sizeof(action_codes[0])] = {0};
 
     for (;;) {
         size_t symbol_count = 0;
         if (xQueueReceive(rx_queue, &symbol_count, portMAX_DELAY) == pdTRUE) {
             uint32_t code;
             if (decode_nec_command(symbol_count, &code)) {
-                int64_t now_us = esp_timer_get_time();
-                bool repeated_code = code == last_code &&
-                                    now_us - last_code_time_us < IR_COMMAND_DEBOUNCE_US;
-                last_code_time_us = now_us;
+                size_t action_index = 0;
+                while (action_index < sizeof(action_codes) / sizeof(action_codes[0]) &&
+                       action_codes[action_index] != code) {
+                    action_index++;
+                }
 
-                if (!repeated_code) {
-                    last_code = code;
-                    ESP_LOGI(TAG, "Comando NEC recibido: 0x%08" PRIX32 " (%s)",
-                             code, get_button_name(code));
-                    if (code == 0xF30CFF00) {
-                        esp_err_t err = led_control_toggle();
-                        if (err == ESP_OK) {
-                            ESP_LOGI(TAG, "Tecla 1: luces GPIO22 %s",
-                                     led_control_is_on() ? "encendidas" : "apagadas");
-                        } else {
-                            ESP_LOGE(TAG, "No se pudo cambiar GPIO22: 0x%x", err);
+                if (action_index < sizeof(action_codes) / sizeof(action_codes[0])) {
+                    int64_t now_us = esp_timer_get_time();
+                    bool repeated_code = last_action_time_us[action_index] != 0 &&
+                                         now_us - last_action_time_us[action_index] <
+                                             IR_COMMAND_DEBOUNCE_US;
+                    if (!repeated_code) {
+                        last_action_time_us[action_index] = now_us;
+                        ESP_LOGI(TAG, "Comando NEC recibido: 0x%08" PRIX32 " (%s)",
+                                 code, get_button_name(code));
+                        if (code == 0xF30CFF00) {
+                            esp_err_t err = led_control_toggle();
+                            if (err == ESP_OK) {
+                                ESP_LOGI(TAG, "Tecla 1: luces GPIO22 %s",
+                                         led_control_is_on() ? "encendidas" : "apagadas");
+                            } else {
+                                ESP_LOGE(TAG, "No se pudo cambiar GPIO22: 0x%x", err);
+                            }
+                        } else if (code == 0xE718FF00) {
+                            esp_err_t err = motor_control_toggle();
+                            if (err != ESP_OK) {
+                                ESP_LOGE(TAG, "No se pudo cambiar GPIO16: 0x%x", err);
+                            }
+                        } else if (code == 0xA15EFF00) {
+                            machine_control_toggle();
                         }
-                    } else if (code == 0xE718FF00) {
-                        esp_err_t err = motor_control_toggle();
-                        if (err != ESP_OK) {
-                            ESP_LOGE(TAG, "No se pudo cambiar GPIO16: 0x%x", err);
-                        }
-                    } else if (code == 0xA15EFF00) {
-                        machine_control_toggle();
                     }
                 }
             }

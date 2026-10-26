@@ -1,6 +1,8 @@
 #ifndef MACHINE_CONTROL_H
 #define MACHINE_CONTROL_H
 
+#include <stdbool.h>
+
 #include "esp_err.h"
 
 typedef enum {
@@ -11,6 +13,7 @@ typedef enum {
 
 esp_err_t machine_control_init(void);
 void machine_control_toggle(void);
+esp_err_t machine_control_set_enabled(bool enabled);
 esp_err_t machine_control_trigger(void);
 
 #endif
