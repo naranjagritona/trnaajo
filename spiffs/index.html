@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f4f7fb">
+    <title>Dashboard | ESP32</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/app.js" defer></script>
+</head>
+<body>
+    <main class="dashboard">
+        <header class="topbar">
+            <a class="brand" href="/" aria-label="Dashboard ESP32">
+                <span class="brand-mark" aria-hidden="true">E</span>
+                <span>ESP32 <span class="brand-muted">CONTROL</span></span>
+            </a>
+            <span class="connection"><span class="connection-dot"></span>Dispositivo conectado</span>
+        </header>
+
+        <section class="welcome">
+            <p class="eyebrow">PANEL DE CONTROL</p>
+            <h1>Dashboard</h1>
+            <p class="welcome-copy">Administra los dispositivos conectados a tu ESP32.</p>
+        </section>
+
+        <section class="device-card" aria-labelledby="led-title">
+            <div class="card-heading">
+                <div class="device-icon" aria-hidden="true">●</div>
+                <div>
+                    <p class="eyebrow">DISPOSITIVO</p>
+                    <h2 id="led-title">LED principal</h2>
+                </div>
+                <span class="gpio-tag">GPIO 22</span>
+            </div>
+            <div class="device-status">
+                <span class="status-indicator" aria-hidden="true"></span>
+                <span>Control disponible</span>
+            </div>
+            <div class="controls">
+                <form action="/led/on" method="post">
+                    <button class="button button-on" type="submit">Prender LED</button>
+                </form>
+                <form action="/led/off" method="post">
+                    <button class="button button-off" type="submit">Apagar LED</button>
+                </form>
+            </div>
+            <p class="card-footnote">Los cambios se aplican directamente al pin GPIO 22.</p>
+        </section>
+
+        <section class="device-card" aria-labelledby="motor-title">
+            <div class="card-heading">
+                <div class="device-icon motor-icon" aria-hidden="true">↻</div>
+                <div>
+                    <p class="eyebrow">DISPOSITIVO</p>
+                    <h2 id="motor-title">Motor</h2>
+                </div>
+                <span class="gpio-tag">GPIO 16</span>
+            </div>
+            <div class="device-status">
+                <span class="status-indicator" aria-hidden="true"></span>
+                <span>Control disponible</span>
+            </div>
+            <div class="controls">
+                <form action="/motor/on" method="post">
+                    <button class="button button-on" type="submit">Prender motor</button>
+                </form>
+                <form action="/motor/off" method="post">
+                    <button class="button button-off" type="submit">Apagar motor</button>
+                </form>
+            </div>
+            <p class="card-footnote">Usa un transistor o driver de motor; no lo conectes directamente al GPIO.</p>
+        </section>
+
+        <footer class="footer">Panel local <span>·</span> ESP32</footer>
+    </main>
+</body>
+</html>
