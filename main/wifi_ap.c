@@ -3,11 +3,13 @@
 #include "esp_event.h"
 #include "esp_netif.h"
 #include "esp_wifi.h"
+#include "mdns.h"
 #include "nvs_flash.h"
 
 #include "esp_log.h"
 
-#define WIFI_AP_SSID "¿sos un capito?"
+#include "wifi_ap.h"
+
 #define WIFI_AP_PASSWORD "soyelmascapito"
 #define WIFI_AP_CHANNEL 1
 #define WIFI_AP_MAX_CONNECTIONS 4
@@ -79,7 +81,25 @@ esp_err_t wifi_ap_start(void)
         return err;
     }
 
-    ESP_LOGI(TAG, "Punto de acceso iniciado: SSID=%s, IP=http://192.168.4.1", WIFI_AP_SSID);
+    err = mdns_init();
+    if (err != ESP_OK) {
+        return err;
+    }
+
+    err = mdns_hostname_set(WIFI_AP_HOSTNAME);
+    if (err != ESP_OK) {
+        mdns_free();
+        return err;
+    }
+
+    err = mdns_service_add("ESP32 Dashboard", "_http", "_tcp", 80, NULL, 0);
+    if (err != ESP_OK) {
+        mdns_free();
+        return err;
+    }
+
+    ESP_LOGI(TAG, "Punto de acceso iniciado: SSID=%s, dashboard=%s",
+             WIFI_AP_SSID, WIFI_AP_DASHBOARD_URL);
     ESP_LOGW(TAG, "Cambia WIFI_AP_PASSWORD antes de usar el dispositivo en un entorno compartido");
     return ESP_OK;
 }

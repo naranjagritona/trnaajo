@@ -26,5 +26,5 @@ void app_main(void)
 	ESP_ERROR_CHECK(wifi_ap_start());
 	ESP_ERROR_CHECK(http_server_start());
 
-	ESP_LOGI(TAG, "Conéctate a la red ESP32-LED y abre http://192.168.4.1");
+	ESP_LOGI(TAG, "Conéctate a la red %s y abre %s", WIFI_AP_SSID, WIFI_AP_DASHBOARD_URL);
 }

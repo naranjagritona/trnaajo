@@ -105,6 +105,19 @@ p {
     font-size: 14px;
 }
 
+.dashboard-link {
+    display: inline-block;
+    margin-top: 12px;
+    color: #3159d9;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.dashboard-link:hover {
+    text-decoration: underline;
+}
+
 .device-card {
     max-width: 520px;
     margin-bottom: 16px;
