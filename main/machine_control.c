@@ -186,6 +186,14 @@ esp_err_t machine_control_set_enabled(bool enabled)
     return err;
 }
 
+machine_state_t machine_control_get_state(void)
+{
+    portENTER_CRITICAL(&machine_state_lock);
+    machine_state_t state = machine_state;
+    portEXIT_CRITICAL(&machine_state_lock);
+    return state;
+}
+
 esp_err_t machine_control_trigger(void)
 {
     portENTER_CRITICAL(&machine_state_lock);

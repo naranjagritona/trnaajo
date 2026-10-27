@@ -157,6 +157,36 @@ static esp_err_t alarm_post_handler(httpd_req_t *req)
     return httpd_resp_send(req, NULL, 0);
 }
 
+static esp_err_t alarm_status_get_handler(httpd_req_t *req)
+{
+    static const char *const alarm_state_names[] = {
+        "apagada",
+        "prendida",
+        "disparada",
+    };
+    machine_state_t alarm_state = machine_control_get_state();
+    if (alarm_state < MACHINE_STATE_OFF || alarm_state > MACHINE_STATE_TRIGGERED) {
+        return httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR,
+                                   "Estado de alarma invalido");
+    }
+
+    char response[112];
+    int response_length = snprintf(
+        response, sizeof(response),
+        "{\"state\":\"%s\",\"led\":\"%s\",\"motor\":\"%s\"}",
+        alarm_state_names[alarm_state],
+        led_control_is_on() ? "prendido" : "apagado",
+        motor_control_is_on() ? "prendido" : "apagado");
+    if (response_length < 0 || (size_t)response_length >= sizeof(response)) {
+        return httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR,
+                                   "No se pudo generar el estado de la alarma");
+    }
+
+    httpd_resp_set_type(req, "application/json; charset=utf-8");
+    httpd_resp_set_hdr(req, "Cache-Control", "no-store");
+    return httpd_resp_send(req, response, response_length);
+}
+
 static const httpd_uri_t root_uri = {
     .uri = "/",
     .method = HTTP_GET,
@@ -219,6 +249,12 @@ static const httpd_uri_t alarm_off_uri = {
     .user_ctx = (void *)&turn_alarm_off,
 };
 
+static const httpd_uri_t alarm_status_uri = {
+    .uri = "/alarm/status",
+    .method = HTTP_GET,
+    .handler = alarm_status_get_handler,
+};
+
 /*
  * Inicia el servidor HTTP y registra todas sus rutas.
  * Si aparece un error al registrar una ruta, se limpia la instancia y se devuelve el error.
@@ -260,6 +296,9 @@ esp_err_t http_server_start(void)
     }
     if (err == ESP_OK) {
         err = httpd_register_uri_handler(server, &alarm_off_uri);
+    }
+    if (err == ESP_OK) {
+        err = httpd_register_uri_handler(server, &alarm_status_uri);
     }
     if (err != ESP_OK) {
         httpd_stop(server);

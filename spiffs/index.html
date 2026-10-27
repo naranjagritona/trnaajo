@@ -33,9 +33,9 @@
                 </div>
                 <span class="gpio-tag">GPIO 22</span>
             </div>
-            <div class="device-status">
+            <div class="device-status led-status" data-state="unknown">
                 <span class="status-indicator" aria-hidden="true"></span>
-                <span>Control disponible</span>
+                <span id="led-status" role="status">Consultando estado...</span>
             </div>
             <div class="controls">
                 <form action="/led/on" method="post">
@@ -57,9 +57,9 @@
                 </div>
                 <span class="gpio-tag">GPIO 16</span>
             </div>
-            <div class="device-status">
+            <div class="device-status motor-status" data-state="unknown">
                 <span class="status-indicator" aria-hidden="true"></span>
-                <span>Control disponible</span>
+                <span id="motor-status" role="status">Consultando estado...</span>
             </div>
             <div class="controls">
                 <form action="/motor/on" method="post">
@@ -81,9 +81,9 @@
                 </div>
                 <span class="gpio-tag">GPIO 25 / 26 / 27</span>
             </div>
-            <div class="device-status">
+            <div class="device-status alarm-status" data-state="unknown">
                 <span class="status-indicator" aria-hidden="true"></span>
-                <span role="status">Control disponible</span>
+                <span id="alarm-status" role="status">Consultando estado...</span>
             </div>
             <div class="controls">
                 <form action="/alarm/on" method="post">

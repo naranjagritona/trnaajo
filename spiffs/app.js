@@ -1,3 +1,54 @@
+const alarmStatus = document.getElementById("alarm-status");
+const alarmStatusContainer = document.querySelector(".alarm-status");
+const ledStatus = document.getElementById("led-status");
+const ledStatusContainer = document.querySelector(".led-status");
+const motorStatus = document.getElementById("motor-status");
+const motorStatusContainer = document.querySelector(".motor-status");
+let alarmStatusRequestPending = false;
+
+async function refreshDeviceStates() {
+    if (alarmStatusRequestPending) {
+        return;
+    }
+    alarmStatusRequestPending = true;
+
+    try {
+        const response = await fetch("/alarm/status", { cache: "no-store" });
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const status = await response.json();
+        if (!["apagada", "prendida", "disparada"].includes(status.state) ||
+            !["prendido", "apagado"].includes(status.led) ||
+            !["prendido", "apagado"].includes(status.motor)) {
+            throw new Error("Respuesta de estados inválida");
+        }
+
+        alarmStatus.textContent = `Estado: ${status.state}`;
+        alarmStatusContainer.dataset.state = status.state;
+        ledStatus.textContent = `Estado: ${status.led}`;
+        ledStatusContainer.dataset.state = status.led;
+        motorStatus.textContent = `Estado: ${status.motor}`;
+        motorStatusContainer.dataset.state = status.motor;
+    } catch (error) {
+        for (const [element, container] of [
+            [alarmStatus, alarmStatusContainer],
+            [ledStatus, ledStatusContainer],
+            [motorStatus, motorStatusContainer],
+        ]) {
+            element.textContent = "Estado no disponible";
+            container.dataset.state = "unknown";
+        }
+        console.error("No se pudieron consultar los estados del ESP32:", error);
+    } finally {
+        alarmStatusRequestPending = false;
+    }
+}
+
+refreshDeviceStates();
+window.setInterval(refreshDeviceStates, 1000);
+
 document.querySelectorAll(".controls form").forEach((form) => {
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
@@ -34,6 +85,7 @@ document.querySelectorAll(".controls form").forEach((form) => {
                 cardButton.disabled = false;
                 cardButton.textContent = originalLabels[index];
             });
+            refreshDeviceStates();
         }
     });
 });

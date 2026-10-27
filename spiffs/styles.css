@@ -166,6 +166,25 @@ p {
     margin: 25px 0 18px;
 }
 
+.alarm-status[data-state="disparada"] .status-indicator {
+    background: #dc3545;
+    box-shadow: 0 0 0 3px #fde8ea;
+}
+
+.alarm-status[data-state="prendida"] .status-indicator,
+.led-status[data-state="prendido"] .status-indicator,
+.motor-status[data-state="prendido"] .status-indicator {
+    background: #25ad78;
+    box-shadow: 0 0 0 3px #e2f6ee;
+}
+
+.alarm-status[data-state="apagada"] .status-indicator,
+.led-status[data-state="apagado"] .status-indicator,
+.motor-status[data-state="apagado"] .status-indicator {
+    background: #8792a5;
+    box-shadow: 0 0 0 3px #edf0f4;
+}
+
 .controls {
     display: flex;
     flex-wrap: wrap;
