@@ -156,6 +156,13 @@ p {
     font-weight: 800;
 }
 
+.sensor-icon {
+    background: #e8f7fb;
+    color: #13849b;
+    font-size: 30px;
+    font-weight: 700;
+}
+
 .card-heading .eyebrow {
     margin-bottom: 4px;
 }
@@ -196,6 +203,35 @@ p {
 .motor-status[data-state="apagado"] .status-indicator {
     background: #8792a5;
     box-shadow: 0 0 0 3px #edf0f4;
+}
+
+.sensor-status[data-state="available"] .status-indicator {
+    background: #25ad78;
+    box-shadow: 0 0 0 3px #e2f6ee;
+}
+
+.sensor-status[data-state="unavailable"] .status-indicator {
+    background: #8792a5;
+    box-shadow: 0 0 0 3px #edf0f4;
+}
+
+.sensor-readings {
+    display: grid;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.sensor-readings p {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0;
+    color: #748097;
+    font-size: 13px;
+}
+
+.sensor-readings strong {
+    color: #172033;
+    font-variant-numeric: tabular-nums;
 }
 
 .controls {

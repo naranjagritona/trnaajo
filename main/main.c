@@ -2,6 +2,7 @@
 #include "esp_log.h"
 
 #include "http_server.h"
+#include "dht11_sensor.h"
 #include "ir_remote.h"
 #include "led_control.h"
 #include "machine_control.h"
@@ -21,6 +22,7 @@ void app_main(void)
 	ESP_ERROR_CHECK(led_control_init());
 	ESP_ERROR_CHECK(motor_control_init());
 	ESP_ERROR_CHECK(machine_control_init());
+	ESP_ERROR_CHECK(dht11_sensor_start());
 	ESP_ERROR_CHECK(ir_remote_start());
 	ESP_ERROR_CHECK(spiffs_fs_init());
 	ESP_ERROR_CHECK(wifi_ap_start());

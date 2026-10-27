@@ -1,4 +1,44 @@
 dependencies:
+  esp-idf-lib/dht:
+    component_hash: a0a1b26519566809041bc8fccf754e3ee9b25f73b0decbdc51bfd16143dedd66
+    dependencies:
+    - name: esp-idf-lib/esp_idf_lib_helpers
+      registry_url: https://components.espressif.com
+      require: private
+      version: '*'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    targets:
+    - esp32
+    - esp32c2
+    - esp32c3
+    - esp32c5
+    - esp32c6
+    - esp32c61
+    - esp32h2
+    - esp32p4
+    - esp32s2
+    - esp32s3
+    version: 1.2.0
+  esp-idf-lib/esp_idf_lib_helpers:
+    component_hash: 689853bb8993434f9556af0f2816e808bf77b5d22100144b21f3519993daf237
+    dependencies: []
+    source:
+      registry_url: https://components.espressif.com
+      type: service
+    targets:
+    - esp32
+    - esp32c2
+    - esp32c3
+    - esp32c5
+    - esp32c6
+    - esp32c61
+    - esp32h2
+    - esp32p4
+    - esp32s2
+    - esp32s3
+    version: 1.4.0
   espressif/mdns:
     component_hash: ef0766474b37459f6ad22461e453a8713e780e831a7c993b16919d817988dff6
     dependencies:
@@ -14,7 +54,8 @@ dependencies:
       type: idf
     version: 6.1.0
 direct_dependencies:
+- esp-idf-lib/dht
 - espressif/mdns
-manifest_hash: 527e5db2fc494b74d9876feef38224e89fa39554a4a186cd280535d375e22a19
+manifest_hash: 772712217d50451a8a29b2375589306806aa4297f3c403acef051db63743af5d
 target: esp32
 version: 3.0.0

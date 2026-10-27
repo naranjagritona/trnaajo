@@ -1,6 +1,7 @@
 idf_component_register(
     SRCS
         "main.c"
+        "dht11_sensor.c"
         "led_control.c"
         "machine_control.c"
         "motor_control.c"
@@ -10,6 +11,7 @@ idf_component_register(
         "http_server.c"
     INCLUDE_DIRS "."
     REQUIRES
+        dht
         esp_event
         esp_driver_gpio
         esp_driver_rmt

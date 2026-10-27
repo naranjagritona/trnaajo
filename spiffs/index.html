@@ -22,7 +22,7 @@
             <p class="eyebrow">PANEL DE CONTROL</p>
             <h1>Dashboard</h1>
             <p class="welcome-copy">Administra los dispositivos conectados a tu ESP32.</p>
-            <a class="dashboard-link" href="http://esp32-control.local">Abrir dashboard: esp32-control.local</a>
+            <a class="dashboard-link" href="http://JAJA-SOS-UN-MASCAPITO">Abrir dashboard: esp32-control.local</a>
         </section>
 
         <section class="device-card" aria-labelledby="led-title">
@@ -95,6 +95,26 @@
                 </form>
             </div>
             <p class="card-footnote">Funciona como el botón 3 del control remoto. El pulsador de GPIO 36 dispara la alarma cuando está prendida.</p>
+        </section>
+
+        <section class="device-card" aria-labelledby="sensor-title">
+            <div class="card-heading">
+                <div class="device-icon sensor-icon" aria-hidden="true">°</div>
+                <div>
+                    <p class="eyebrow">SENSOR DHT11</p>
+                    <h2 id="sensor-title">Ambiente</h2>
+                </div>
+                <span class="gpio-tag">GPIO 19</span>
+            </div>
+            <div class="device-status sensor-status" data-state="unknown">
+                <span class="status-indicator" aria-hidden="true"></span>
+                <span id="sensor-status" role="status">Esperando primera lectura...</span>
+            </div>
+            <div class="sensor-readings">
+                <p>Temperatura <strong id="sensor-temperature">--.- °C</strong></p>
+                <p>Humedad <strong id="sensor-humidity">--.- %</strong></p>
+            </div>
+            <p class="card-footnote">Lectura actualizada cada 2 segundos.</p>
         </section>
 
         <footer class="footer">Panel local <span>·</span> ESP32</footer>

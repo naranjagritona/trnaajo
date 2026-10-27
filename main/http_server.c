@@ -5,6 +5,7 @@
 
 #include "esp_http_server.h"
 
+#include "dht11_sensor.h"
 #include "led_control.h"
 #include "machine_control.h"
 #include "motor_control.h"
@@ -170,13 +171,22 @@ static esp_err_t alarm_status_get_handler(httpd_req_t *req)
                                    "Estado de alarma invalido");
     }
 
-    char response[112];
+    int16_t temperature_tenths = 0;
+    int16_t humidity_tenths = 0;
+    bool sensor_available = dht11_sensor_get_reading(
+        &temperature_tenths, &humidity_tenths);
+
+    char response[192];
     int response_length = snprintf(
         response, sizeof(response),
-        "{\"state\":\"%s\",\"led\":\"%s\",\"motor\":\"%s\"}",
+        "{\"state\":\"%s\",\"led\":\"%s\",\"motor\":\"%s\","
+        "\"sensor_available\":%s,\"temperature_tenths\":%d,\"humidity_tenths\":%d}",
         alarm_state_names[alarm_state],
         led_control_is_on() ? "prendido" : "apagado",
-        motor_control_is_on() ? "prendido" : "apagado");
+        motor_control_is_on() ? "prendido" : "apagado",
+        sensor_available ? "true" : "false",
+        temperature_tenths,
+        humidity_tenths);
     if (response_length < 0 || (size_t)response_length >= sizeof(response)) {
         return httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR,
                                    "No se pudo generar el estado de la alarma");
