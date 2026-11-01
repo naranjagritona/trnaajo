@@ -5,12 +5,13 @@
 #include <stdint.h>
 
 #include "esp_err.h"
+#include "machine_state.h"
 
 typedef uint8_t machine_state_t;
 
-#define MACHINE_STATE_OFF ((machine_state_t)0b00000001U)
-#define MACHINE_STATE_ON ((machine_state_t)0b00000010U)
-#define MACHINE_STATE_TRIGGERED ((machine_state_t)0b00000100U)
+#define MACHINE_STATE_OFF MACHINE_STATE_ALARM_OFF
+#define MACHINE_STATE_ON MACHINE_STATE_ALARM_ON
+#define MACHINE_STATE_TRIGGERED MACHINE_STATE_ALARM_TRIGGERED
 
 esp_err_t machine_control_init(void);
 void machine_control_toggle(void);

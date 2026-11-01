@@ -4,6 +4,7 @@ idf_component_register(
         "dht11_sensor.c"
         "led_control.c"
         "machine_control.c"
+        "machine_state.c"
         "motor_control.c"
         "ir_remote.c"
         "wifi_ap.c"

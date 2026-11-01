@@ -5,16 +5,9 @@
 #include "freertos/portmacro.h"
 
 #include "board_pins.h"
-#include "gpio_port.h"
+#include "machine_state.h"
 
-typedef enum {
-    LED_STATE_OFF,
-    LED_STATE_ON,
-} led_state_t;
-
-static led_state_t led_state;
-static uint32_t led_port_state;
-static portMUX_TYPE led_state_lock = portMUX_INITIALIZER_UNLOCKED;
+static portMUX_TYPE led_control_lock = portMUX_INITIALIZER_UNLOCKED;
 
 /*
  * Configura el GPIO del LED como salida digital.
@@ -35,6 +28,11 @@ esp_err_t led_control_init(void)
         return err;
     }
 
+    err = machine_state_configure_output(MACHINE_STATE_LED_MASK);
+    if (err != ESP_OK) {
+        return err;
+    }
+
     return led_control_set(false);
 }
 
@@ -44,16 +42,13 @@ esp_err_t led_control_init(void)
  */
 esp_err_t led_control_set(bool on)
 {
-    led_state_t next_state = on ? LED_STATE_ON : LED_STATE_OFF;
-
-    portENTER_CRITICAL(&led_state_lock);
-    esp_err_t err = gpio_port_write(&led_port_state, BOARD_LED_PORT_MASK,
-                                    BOARD_LED_GPIO, next_state == LED_STATE_ON);
+    portENTER_CRITICAL(&led_control_lock);
+    esp_err_t err = gpio_set_level(BOARD_LED_GPIO, on);
     if (err == ESP_OK) {
-        led_state = next_state;
+        err = machine_state_set_output(
+            MACHINE_STATE_LED_MASK, on ? MACHINE_STATE_LED_MASK : 0b00000000U);
     }
-    portEXIT_CRITICAL(&led_state_lock);
-
+    portEXIT_CRITICAL(&led_control_lock);
     return err;
 }
 
@@ -63,14 +58,14 @@ esp_err_t led_control_set(bool on)
  */
 esp_err_t led_control_toggle(void)
 {
-    portENTER_CRITICAL(&led_state_lock);
-    led_state_t next_state = led_state == LED_STATE_ON ? LED_STATE_OFF : LED_STATE_ON;
-    esp_err_t err = gpio_port_write(&led_port_state, BOARD_LED_PORT_MASK,
-                                    BOARD_LED_GPIO, next_state == LED_STATE_ON);
+    portENTER_CRITICAL(&led_control_lock);
+    bool on = machine_state_get_output(MACHINE_STATE_LED_MASK) == 0b00000000U;
+    esp_err_t err = gpio_set_level(BOARD_LED_GPIO, on);
     if (err == ESP_OK) {
-        led_state = next_state;
+        err = machine_state_set_output(
+            MACHINE_STATE_LED_MASK, on ? MACHINE_STATE_LED_MASK : 0b00000000U);
     }
-    portEXIT_CRITICAL(&led_state_lock);
+    portEXIT_CRITICAL(&led_control_lock);
     return err;
 }
 
@@ -79,8 +74,5 @@ esp_err_t led_control_toggle(void)
  */
 bool led_control_is_on(void)
 {
-    portENTER_CRITICAL(&led_state_lock);
-    bool on = led_state == LED_STATE_ON;
-    portEXIT_CRITICAL(&led_state_lock);
-    return on;
+    return machine_state_get_output(MACHINE_STATE_LED_MASK) != 0b00000000U;
 }
