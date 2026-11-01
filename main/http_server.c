@@ -7,7 +7,7 @@
 
 #include "dht11_sensor.h"
 #include "led_control.h"
-#include "machine_control.h"
+#include "alarma_control.h"
 #include "motor_control.h"
 
 static httpd_handle_t server;
@@ -148,7 +148,7 @@ static esp_err_t alarm_post_handler(httpd_req_t *req)
                                    "Estado de la alarma no configurado");
     }
 
-    esp_err_t err = machine_control_set_enabled(*desired_state);
+    esp_err_t err = alarma_control_set_enabled(*desired_state);
     if (err != ESP_OK) {
         return httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR,
                                    "No se pudo cambiar el estado de la alarma");
@@ -160,7 +160,7 @@ static esp_err_t alarm_post_handler(httpd_req_t *req)
 
 static esp_err_t alarm_status_get_handler(httpd_req_t *req)
 {
-    machine_state_t alarm_state = machine_control_get_state();
+    machine_state_t alarm_state = alarma_control_get_state();
     const char *alarm_state_name;
     switch (alarm_state) {
     case MACHINE_STATE_OFF:

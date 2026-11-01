@@ -13,7 +13,7 @@
 #include "freertos/task.h"
 
 #include "led_control.h"
-#include "machine_control.h"
+#include "alarma_control.h"
 #include "motor_control.h"
 #include "board_pins.h"
 
@@ -188,7 +188,7 @@ static void ir_remote_task(void *argument)
                                 ESP_LOGE(TAG, "No se pudo cambiar GPIO16: 0x%x", err);
                             }
                         } else if (code == 0xA15EFF00) {
-                            machine_control_toggle();
+                            alarma_control_toggle();
                         }
                     }
                 }

@@ -5,7 +5,7 @@
 #include "dht11_sensor.h"
 #include "ir_remote.h"
 #include "led_control.h"
-#include "machine_control.h"
+#include "alarma_control.h"
 #include "machine_state.h"
 #include "motor_control.h"
 #include "spiffs_fs.h"
@@ -23,7 +23,7 @@ void app_main(void)
 	ESP_ERROR_CHECK(machine_state_init());
 	ESP_ERROR_CHECK(led_control_init());
 	ESP_ERROR_CHECK(motor_control_init());
-	ESP_ERROR_CHECK(machine_control_init());
+	ESP_ERROR_CHECK(alarma_control_init());
 	ESP_ERROR_CHECK(dht11_sensor_start());
 	ESP_ERROR_CHECK(ir_remote_start());
 	ESP_ERROR_CHECK(spiffs_fs_init());

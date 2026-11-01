@@ -3,7 +3,7 @@ idf_component_register(
         "main.c"
         "dht11_sensor.c"
         "led_control.c"
-        "machine_control.c"
+        "alarma_control.c"
         "machine_state.c"
         "motor_control.c"
         "ir_remote.c"

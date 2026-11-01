@@ -1,5 +1,5 @@
-#ifndef MACHINE_CONTROL_H
-#define MACHINE_CONTROL_H
+#ifndef ALARMA_CONTROL_H
+#define ALARMA_CONTROL_H
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -13,10 +13,10 @@ typedef uint8_t machine_state_t;
 #define MACHINE_STATE_ON MACHINE_STATE_ALARM_ON
 #define MACHINE_STATE_TRIGGERED MACHINE_STATE_ALARM_TRIGGERED
 
-esp_err_t machine_control_init(void);
-void machine_control_toggle(void);
-esp_err_t machine_control_set_enabled(bool enabled);
-machine_state_t machine_control_get_state(void);
-esp_err_t machine_control_trigger(void);
+esp_err_t alarma_control_init(void);
+void alarma_control_toggle(void);
+esp_err_t alarma_control_set_enabled(bool enabled);
+machine_state_t alarma_control_get_state(void);
+esp_err_t alarma_control_trigger(void);
 
 #endif
