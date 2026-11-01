@@ -160,13 +160,19 @@ static esp_err_t alarm_post_handler(httpd_req_t *req)
 
 static esp_err_t alarm_status_get_handler(httpd_req_t *req)
 {
-    static const char *const alarm_state_names[] = {
-        "apagada",
-        "prendida",
-        "disparada",
-    };
     machine_state_t alarm_state = machine_control_get_state();
-    if (alarm_state < MACHINE_STATE_OFF || alarm_state > MACHINE_STATE_TRIGGERED) {
+    const char *alarm_state_name;
+    switch (alarm_state) {
+    case MACHINE_STATE_OFF:
+        alarm_state_name = "apagada";
+        break;
+    case MACHINE_STATE_ON:
+        alarm_state_name = "prendida";
+        break;
+    case MACHINE_STATE_TRIGGERED:
+        alarm_state_name = "disparada";
+        break;
+    default:
         return httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR,
                                    "Estado de alarma invalido");
     }
@@ -179,9 +185,10 @@ static esp_err_t alarm_status_get_handler(httpd_req_t *req)
     char response[192];
     int response_length = snprintf(
         response, sizeof(response),
-        "{\"state\":\"%s\",\"led\":\"%s\",\"motor\":\"%s\","
+        "{\"state\":\"%s\",\"state_code\":%u,\"led\":\"%s\",\"motor\":\"%s\","
         "\"sensor_available\":%s,\"temperature_tenths\":%d,\"humidity_tenths\":%d}",
-        alarm_state_names[alarm_state],
+        alarm_state_name,
+        (unsigned int)alarm_state,
         led_control_is_on() ? "prendido" : "apagado",
         motor_control_is_on() ? "prendido" : "apagado",
         sensor_available ? "true" : "false",
