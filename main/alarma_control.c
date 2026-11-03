@@ -33,6 +33,7 @@ static TaskHandle_t button_task_handle;
 static TaskHandle_t alarm_blink_task_handle;
 static bool triggered_indicator_level;
 
+/* Actualiza los indicadores físicos y el estado compartido de la máquina. */
 static esp_err_t alarma_control_write_outputs(machine_state_t state)
 {
     if (state != MACHINE_STATE_OFF &&
@@ -65,6 +66,7 @@ static esp_err_t alarma_control_write_outputs(machine_state_t state)
     return result;
 }
 
+/* Hace parpadear el indicador mientras la alarma permanece disparada. */
 static void alarm_blink_task(void *argument)
 {
     (void)argument;
@@ -88,6 +90,7 @@ static void alarm_blink_task(void *argument)
     }
 }
 
+/* Lee el pulsador y sincroniza su valor con el registro de entradas compartido. */
 static uint8_t alarma_control_read_button(void)
 {
     uint8_t button_level = gpio_get_level(BOARD_STATE_BUTTON_GPIO) != 0b00000000
@@ -104,6 +107,7 @@ static uint8_t alarma_control_read_button(void)
                : 0b00000000U;
 }
 
+/* Espera a que el pulsador se libere y confirma la lectura con antirrebote. */
 static void wait_for_button_release(void)
 {
     for (;;) {
@@ -118,6 +122,7 @@ static void wait_for_button_release(void)
     }
 }
 
+/* Atiende las notificaciones del pulsador y dispara la máquina si corresponde. */
 static void button_task(void *argument)
 {
     (void)argument;
@@ -138,6 +143,7 @@ static void button_task(void *argument)
     }
 }
 
+/* Notifica a la tarea del pulsador cuando ocurre una interrupción GPIO. */
 static void button_isr_handler(void *argument)
 {
     (void)argument;
@@ -148,6 +154,7 @@ static void button_isr_handler(void *argument)
     }
 }
 
+/* Configura los indicadores, el pulsador, las tareas y su interrupción GPIO. */
 esp_err_t alarma_control_init(void)
 {
     const uint64_t output_pin_mask = (0b00000001ULL << BOARD_STATE_OFF_GPIO) |
@@ -237,6 +244,7 @@ esp_err_t alarma_control_init(void)
     return ESP_OK;
 }
 
+/* Alterna la máquina entre los estados prendida y apagada. */
 void alarma_control_toggle(void)
 {
     portENTER_CRITICAL(&machine_state_lock);
@@ -255,6 +263,7 @@ void alarma_control_toggle(void)
     }
 }
 
+/* Establece explícitamente si la máquina debe quedar prendida o apagada. */
 esp_err_t alarma_control_set_enabled(bool enabled)
 {
     machine_state_t next_state = enabled ? MACHINE_STATE_ON : MACHINE_STATE_OFF;
@@ -271,6 +280,7 @@ esp_err_t alarma_control_set_enabled(bool enabled)
     return err;
 }
 
+/* Devuelve el estado actual de la máquina de forma segura entre tareas. */
 machine_state_t alarma_control_get_state(void)
 {
     portENTER_CRITICAL(&machine_state_lock);
@@ -280,6 +290,7 @@ machine_state_t alarma_control_get_state(void)
     return state;
 }
 
+/* Dispara la alarma únicamente si la máquina está prendida. */
 esp_err_t alarma_control_trigger(void)
 {
     portENTER_CRITICAL(&machine_state_lock);

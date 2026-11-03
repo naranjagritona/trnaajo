@@ -33,7 +33,7 @@ esp_err_t led_control_init(void)
     return led_control_set(false);
 }
 
-/* Cambia el LED y mantiene sincronizados el GPIO y el estado compartido. */
+/*  Activa o desactiva el led según el valor recibido. */
 esp_err_t led_control_set(bool on)
 {
     portENTER_CRITICAL(&led_control_lock);
