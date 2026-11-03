@@ -11,7 +11,8 @@
 #include "freertos/portmacro.h"
 #include "freertos/task.h"
 
-#define DHT11_GPIO GPIO_NUM_19
+#include "board_pins.h"
+
 #define DHT11_SAMPLE_INTERVAL_MS 2000
 #define DHT11_TASK_STACK_SIZE 3072
 
@@ -46,7 +47,7 @@ static void sensor_task(void *argument)
         int16_t humidity_tenths;
         int16_t temperature_tenths;
         esp_err_t err = dht_read_data(
-            DHT_TYPE_DHT11, DHT11_GPIO, &humidity_tenths, &temperature_tenths);
+            DHT_TYPE_DHT11, BOARD_DHT11_GPIO, &humidity_tenths, &temperature_tenths);
         if (err == ESP_OK) {
             portENTER_CRITICAL(&reading_lock);
             last_temperature_tenths = temperature_tenths;
@@ -70,7 +71,7 @@ static void sensor_task(void *argument)
 esp_err_t dht11_sensor_start(void)
 {
     const gpio_config_t config = {
-        .pin_bit_mask = 1ULL << DHT11_GPIO,
+        .pin_bit_mask = 1ULL << BOARD_DHT11_GPIO,
         .mode = GPIO_MODE_INPUT_OUTPUT_OD,
         .pull_up_en = GPIO_PULLUP_ENABLE,
         .pull_down_en = GPIO_PULLDOWN_DISABLE,
@@ -82,7 +83,7 @@ esp_err_t dht11_sensor_start(void)
         return err;
     }
 
-    err = gpio_set_level(DHT11_GPIO, 1);
+    err = gpio_set_level(BOARD_DHT11_GPIO, 1);
     if (err != ESP_OK) {
         return err;
     }
@@ -93,6 +94,6 @@ esp_err_t dht11_sensor_start(void)
     }
 
     ESP_LOGI(TAG, "DHT11 listo en GPIO%d; lectura cada %u ms",
-             DHT11_GPIO, DHT11_SAMPLE_INTERVAL_MS);
+             BOARD_DHT11_GPIO, DHT11_SAMPLE_INTERVAL_MS);
     return ESP_OK;
 }

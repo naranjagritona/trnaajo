@@ -3,121 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#f4f7fb">
-    <title>Dashboard | ESP32</title>
+    <meta name="theme-color" content="#0b1220">
+    <title>Dashboard ESP-32 | Panel</title>
     <link rel="stylesheet" href="/styles.css">
     <script src="/app.js" defer></script>
 </head>
 <body>
     <main class="dashboard">
         <header class="topbar">
-            <a class="brand" href="/" aria-label="Dashboard ESP32">
-                <span class="brand-mark" aria-hidden="true">E</span>
-                <span>ESP32 <span class="brand-muted">CONTROL</span></span>
+            <a class="brand" href="/" aria-label="Panel de control ESP32">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M5 12h3l2-6 4 12 2-6h3" />
+                    </svg>
+                </span>
+                <span class="brand-name">NODO<span>32</span></span>
             </a>
-            <span class="connection"><span class="connection-dot"></span>Dispositivo conectado</span>
+            <div class="topbar-meta">
+                <a class="network-link" href="http://esp32-control.local" target="_blank" rel="noopener noreferrer">
+                    esp32-control.local
+                    <span aria-hidden="true">↗</span>
+                </a>
+                <div class="connection" id="connection-status" data-state="unknown" role="status">
+                    <span class="connection-dot" aria-hidden="true"></span>
+                    <span id="connection-label">Conectando...</span>
+                </div>
+            </div>
         </header>
 
         <section class="welcome">
-            <p class="eyebrow">PANEL DE CONTROL</p>
-            <h1>Dashboard</h1>
-            <p class="welcome-copy">Administra los dispositivos conectados a tu ESP32.</p>
-            <a class="dashboard-link" href="http://JAJA-SOS-UN-MASCAPITO">Abrir dashboard: esp32-control.local</a>
+            <div>
+                <p class="eyebrow"><span class="eyebrow-line"></span> DASHBOARD ESP32</p>
+                <h1>salon 1<br><span>conectado</span></h1>
+                <p class="welcome-copy">Estado en vivo de tus dispositivos y del ambiente.</p>
+            </div>
+            <div class="live-badge">2
+                <span class="live-pulse" aria-hidden="true"></span>
+                ACTUALIZACIÓN EN VIVO
+            </div>
         </section>
 
-        <section class="device-card" aria-labelledby="led-title">
-            <div class="card-heading">
-                <div class="device-icon" aria-hidden="true">●</div>
-                <div>
-                    <p class="eyebrow">DISPOSITIVO</p>
-                    <h2 id="led-title">LED principal</h2>
+        <section class="device-grid" aria-label="Dispositivos y sensores">
+            <article class="device-card led-card" data-state="unknown" aria-labelledby="led-title">
+                <div class="card-heading">
+                    <div class="device-icon led-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M9 18h6m-5 3h4m-2-19a7 7 0 0 0-4 12.75c.5.35 1 1.25 1 2.25h6c0-1 .5-1.9 1-2.25A7 7 0 0 0 12 2Z" />
+                        </svg>
+                    </div>
+                    <div class="card-title">
+                        <p class="eyebrow">ILUMINACIÓN</p>
+                        <h2 id="led-title">LED principal</h2>
+                    </div>
+                    <span class="gpio-tag">GPIO 22</span>
                 </div>
-                <span class="gpio-tag">GPIO 22</span>
-            </div>
-            <div class="device-status led-status" data-state="unknown">
-                <span class="status-indicator" aria-hidden="true"></span>
-                <span id="led-status" role="status">Consultando estado...</span>
-            </div>
-            <div class="controls">
-                <form action="/led/on" method="post">
-                    <button class="button button-on" type="submit">Prender LED</button>
-                </form>
-                <form action="/led/off" method="post">
-                    <button class="button button-off" type="submit">Apagar LED</button>
-                </form>
-            </div>
-            <p class="card-footnote">Los cambios se aplican directamente al pin GPIO 22.</p>
-        </section>
-
-        <section class="device-card" aria-labelledby="motor-title">
-            <div class="card-heading">
-                <div class="device-icon motor-icon" aria-hidden="true">↻</div>
-                <div>
-                    <p class="eyebrow">DISPOSITIVO</p>
-                    <h2 id="motor-title">Motor</h2>
+                <div class="device-status led-status" data-state="unknown">
+                    <span class="status-indicator" aria-hidden="true"></span>
+                    <span id="led-status" role="status">Consultando estado...</span>
                 </div>
-                <span class="gpio-tag">GPIO 16</span>
-            </div>
-            <div class="device-status motor-status" data-state="unknown">
-                <span class="status-indicator" aria-hidden="true"></span>
-                <span id="motor-status" role="status">Consultando estado...</span>
-            </div>
-            <div class="controls">
-                <form action="/motor/on" method="post">
-                    <button class="button button-on" type="submit">Prender motor</button>
-                </form>
-                <form action="/motor/off" method="post">
-                    <button class="button button-off" type="submit">Apagar motor</button>
-                </form>
-            </div>
-            <p class="card-footnote">Usa un transistor o driver de motor; no lo conectes directamente al GPIO.</p>
-        </section>
-
-        <section class="device-card" aria-labelledby="alarm-title">
-            <div class="card-heading">
-                <div class="device-icon alarm-icon" aria-hidden="true">!</div>
-                <div>
-                    <p class="eyebrow">SISTEMA</p>
-                    <h2 id="alarm-title">Alarma</h2>
+                <div class="controls">
+                    <form action="/led/on" method="post">
+                        <button class="button button-on" type="submit">Encender</button>
+                    </form>
+                    <form action="/led/off" method="post">
+                        <button class="button button-off" type="submit">Apagar</button>
+                    </form>
                 </div>
-                <span class="gpio-tag">GPIO 25 / 26 / 27</span>
-            </div>
-            <div class="device-status alarm-status" data-state="unknown">
-                <span class="status-indicator" aria-hidden="true"></span>
-                <span id="alarm-status" role="status">Consultando estado...</span>
-            </div>
-            <div class="controls">
-                <form action="/alarm/on" method="post">
-                    <button class="button button-on" type="submit">Prender alarma</button>
-                </form>
-                <form action="/alarm/off" method="post">
-                    <button class="button button-off" type="submit">Apagar alarma</button>
-                </form>
-            </div>
-            <p class="card-footnote">Funciona como el botón 3 del control remoto. El pulsador de GPIO 36 dispara la alarma cuando está prendida.</p>
-        </section>
 
-        <section class="device-card" aria-labelledby="sensor-title">
-            <div class="card-heading">
-                <div class="device-icon sensor-icon" aria-hidden="true">°</div>
-                <div>
-                    <p class="eyebrow">SENSOR DHT11</p>
-                    <h2 id="sensor-title">Ambiente</h2>
+            </article>
+
+            <article class="device-card motor-card" data-state="unknown" aria-labelledby="motor-title">
+                <div class="card-heading">
+                    <div class="device-icon motor-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.64 5.64l2.12 2.12m8.48 8.48 2.12 2.12m0-12.72-2.12 2.12m-8.48 8.48-2.12 2.12" />
+                            <circle cx="12" cy="12" r="4" />
+                        </svg>
+                    </div>
+                    <div class="card-title">
+                        <p class="eyebrow">ACCIONAMIENTO</p>
+                        <h2 id="motor-title">Motor</h2>
+                    </div>
+                    <span class="gpio-tag">GPIO 16</span>
                 </div>
-                <span class="gpio-tag">GPIO 19</span>
-            </div>
-            <div class="device-status sensor-status" data-state="unknown">
-                <span class="status-indicator" aria-hidden="true"></span>
-                <span id="sensor-status" role="status">Esperando primera lectura...</span>
-            </div>
-            <div class="sensor-readings">
-                <p>Temperatura <strong id="sensor-temperature">--.- °C</strong></p>
-                <p>Humedad <strong id="sensor-humidity">--.- %</strong></p>
-            </div>
-            <p class="card-footnote">Lectura actualizada cada 2 segundos.</p>
+                <div class="device-status motor-status" data-state="unknown">
+                    <span class="status-indicator" aria-hidden="true"></span>
+                    <span id="motor-status" role="status">Consultando estado...</span>
+                </div>
+                <div class="controls">
+                    <form action="/motor/on" method="post">
+                        <button class="button button-on" type="submit">Encender</button>
+                    </form>
+                    <form action="/motor/off" method="post">
+                        <button class="button button-off" type="submit">Apagar</button>
+                    </form>
+                </div>
+
+            </article>
+
+            <article class="device-card alarm-card" data-state="unknown" aria-labelledby="alarm-title">
+                <div class="card-heading">
+                    <div class="device-icon alarm-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Zm-8 12h4" />
+                        </svg>
+                    </div>
+                    <div class="card-title">
+                        <p class="eyebrow">SEGURIDAD</p>
+                        <h2 id="alarm-title">Sistema de alarma</h2>
+                    </div>
+                    <span class="gpio-tag">GPIO 25 · 26 · 27</span>
+                </div>
+                <div class="device-status alarm-status" data-state="unknown">
+                    <span class="status-indicator" aria-hidden="true"></span>
+                    <span id="alarm-status" role="status">Consultando estado...</span>
+                </div>
+                <div class="controls">
+                    <form action="/alarm/on" method="post">
+                        <button class="button button-on" type="submit">Activar alarma</button>
+                    </form>
+                    <form action="/alarm/off" method="post">
+                        <button class="button button-off" type="submit">Desactivar</button>
+                    </form>
+                </div>
+
+            </article>
+
+            <article class="device-card sensor-card" data-state="unknown" aria-labelledby="sensor-title">
+                <div class="card-heading">
+                    <div class="device-icon sensor-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M14 14.76V5a2 2 0 0 0-4 0v9.76a4 4 0 1 0 4 0Z" />
+                            <path d="M12 12v6" />
+                        </svg>
+                    </div>
+                    <div class="card-title">
+                        <p class="eyebrow">SENSOR AMBIENTAL</p>
+                        <h2 id="sensor-title">Ambiente</h2>
+                    </div>
+                    <span class="gpio-tag">DHT11 · GPIO 19</span>
+                </div>
+                <div class="device-status sensor-status" data-state="unknown">
+                    <span class="status-indicator" aria-hidden="true"></span>
+                    <span id="sensor-status" role="status">Esperando primera lectura...</span>
+                </div>
+                <div class="sensor-readings">
+                    <div class="reading">
+                        <span class="reading-label">Temperatura</span>
+                        <strong id="sensor-temperature">--.- <span>°C</span></strong>
+                    </div>
+                    <div class="reading">
+                        <span class="reading-label">Humedad</span>
+                        <strong id="sensor-humidity">--.- <span>%</span></strong>
+                    </div>
+                </div>
+                <p class="card-footnote">Mediciones actualizadas cada 2 segundos.</p>
+            </article>
         </section>
 
-        <footer class="footer">Panel local <span>·</span> ESP32</footer>
+        <footer class="footer">
+            <span class="footer-mark" aria-hidden="true">N32</span>
+            <span>Panel local ESP32</span>
+            <span class="footer-separator">·</span>
+            <span>Control simple. Información en vivo.</span>
+        </footer>
     </main>
 </body>
 </html>

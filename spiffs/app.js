@@ -8,7 +8,15 @@ const sensorStatus = document.getElementById("sensor-status");
 const sensorStatusContainer = document.querySelector(".sensor-status");
 const sensorTemperature = document.getElementById("sensor-temperature");
 const sensorHumidity = document.getElementById("sensor-humidity");
+const connectionStatus = document.getElementById("connection-status");
+const connectionLabel = document.getElementById("connection-label");
 let alarmStatusRequestPending = false;
+
+function showDeviceState(element, container, state, label) {
+    element.textContent = label;
+    container.dataset.state = state;
+    container.closest(".device-card").dataset.state = state;
+}
 
 async function refreshDeviceStates() {
     if (alarmStatusRequestPending) {
@@ -32,25 +40,37 @@ async function refreshDeviceStates() {
             throw new Error("Respuesta de estados inválida");
         }
 
-        alarmStatus.textContent = `Estado: ${status.state}`;
-        alarmStatusContainer.dataset.state = status.state;
-        ledStatus.textContent = `Estado: ${status.led}`;
-        ledStatusContainer.dataset.state = status.led;
-        motorStatus.textContent = `Estado: ${status.motor}`;
-        motorStatusContainer.dataset.state = status.motor;
+        connectionStatus.dataset.state = "connected";
+        connectionLabel.textContent = "ESP32 conectado";
+        const alarmLabels = {
+            apagada: "APAGADA",
+            prendida: "PRENDIDA",
+            disparada: "DISPARADA",
+        };
+        const deviceLabels = {
+            prendido: "PRENDIDO",
+            apagado: "APAGADO",
+        };
+        showDeviceState(alarmStatus, alarmStatusContainer, status.state, alarmLabels[status.state]);
+        showDeviceState(ledStatus, ledStatusContainer, status.led, deviceLabels[status.led]);
+        showDeviceState(motorStatus, motorStatusContainer, status.motor, deviceLabels[status.motor]);
 
         if (status.sensor_available) {
             sensorTemperature.textContent = `${(status.temperature_tenths / 10).toFixed(1)} °C`;
             sensorHumidity.textContent = `${(status.humidity_tenths / 10).toFixed(1)} %`;
             sensorStatus.textContent = "Sensor conectado";
             sensorStatusContainer.dataset.state = "available";
+            sensorStatusContainer.closest(".device-card").dataset.state = "available";
         } else {
             sensorTemperature.textContent = "--.- °C";
             sensorHumidity.textContent = "--.- %";
             sensorStatus.textContent = "Esperando primera lectura...";
             sensorStatusContainer.dataset.state = "unavailable";
+            sensorStatusContainer.closest(".device-card").dataset.state = "unavailable";
         }
     } catch (error) {
+        connectionStatus.dataset.state = "disconnected";
+        connectionLabel.textContent = "Sin conexión";
         for (const [element, container] of [
             [alarmStatus, alarmStatusContainer],
             [ledStatus, ledStatusContainer],
@@ -58,11 +78,13 @@ async function refreshDeviceStates() {
         ]) {
             element.textContent = "Estado no disponible";
             container.dataset.state = "unknown";
+            container.closest(".device-card").dataset.state = "unknown";
         }
         sensorTemperature.textContent = "--.- °C";
         sensorHumidity.textContent = "--.- %";
         sensorStatus.textContent = "Lectura no disponible";
         sensorStatusContainer.dataset.state = "unknown";
+        sensorStatusContainer.closest(".device-card").dataset.state = "unknown";
         console.error("No se pudieron consultar los estados del ESP32:", error);
     } finally {
         alarmStatusRequestPending = false;
@@ -78,7 +100,7 @@ document.querySelectorAll(".controls form").forEach((form) => {
 
         const button = form.querySelector('button[type="submit"]');
         const card = form.closest(".device-card");
-        const status = card?.querySelector(".device-status span:last-child");
+        const status = card?.querySelector(".device-status [role='status']");
         const buttons = card?.querySelectorAll('button[type="submit"]');
         if (!button || !status || !buttons) {
             return;

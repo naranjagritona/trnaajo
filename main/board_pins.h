@@ -16,4 +16,6 @@
 
 #define BOARD_IR_RECEIVER_GPIO GPIO_NUM_23
 
+#define BOARD_DHT11_GPIO GPIO_NUM_19
+
 #endif
