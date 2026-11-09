@@ -42,7 +42,7 @@ esp_err_t motor_control_init(void)
 esp_err_t motor_control_set(bool on)
 {
     portENTER_CRITICAL(&motor_control_lock);
-    esp_err_t err = gpio_set_level(BOARD_MOTOR_GPIO, on);
+    esp_err_t err = gpio_set_level(BOARD_MOTOR_GPIO, !on);
     if (err == ESP_OK) {
         err = machine_state_set_output(
             MACHINE_STATE_MOTOR_MASK, on ? MACHINE_STATE_MOTOR_MASK : 0b00000000U);
@@ -58,7 +58,7 @@ esp_err_t motor_control_toggle(void)
 {
     portENTER_CRITICAL(&motor_control_lock);
     bool on = machine_state_get_output(MACHINE_STATE_MOTOR_MASK) == 0b00000000U;
-    esp_err_t err = gpio_set_level(BOARD_MOTOR_GPIO, on);
+    esp_err_t err = gpio_set_level(BOARD_MOTOR_GPIO, !on);
     if (err == ESP_OK) {
         err = machine_state_set_output(
             MACHINE_STATE_MOTOR_MASK, on ? MACHINE_STATE_MOTOR_MASK : 0b00000000U);

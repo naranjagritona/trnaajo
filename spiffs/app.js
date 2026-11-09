@@ -26,6 +26,7 @@ let receivedText = "";
 let pendingCommand = null;
 let statusTimer = null;
 let statusInterval = null;
+let statusRequestPending = false;
 let wifiRequestPending = false;
 
 function setConnection(connected, label) {
@@ -104,11 +105,12 @@ function handleSerialLine(value) {
     const line = value.trim();
     if (!line) return;
     if (line.charAt(0) === "{") {
+        statusRequestPending = false;
+        window.clearTimeout(statusTimer);
+        statusTimer = null;
         try {
             applyStatus(JSON.parse(line));
             serialReady = true;
-            window.clearTimeout(statusTimer);
-            statusTimer = null;
             setConnection(true, "ESP32 conectado por serial");
         } catch (error) {
             console.error("Respuesta de estado inválida:", error);
@@ -164,6 +166,7 @@ async function closeSerial(reason) {
     serialConnected = false;
     serialReady = false;
     receivedText = "";
+    statusRequestPending = false;
     window.clearTimeout(statusTimer);
     window.clearInterval(statusInterval);
     statusTimer = null;
@@ -181,9 +184,11 @@ async function closeSerial(reason) {
 }
 
 async function requestSerialStatus() {
-    if (!serialConnected || pendingCommand) return;
+    if (!serialConnected || pendingCommand || statusRequestPending) return;
+    statusRequestPending = true;
     window.clearTimeout(statusTimer);
     statusTimer = window.setTimeout(() => {
+        statusRequestPending = false;
         serialReady = false;
         setConnection(false, "Puerto abierto; ESP32 sin respuesta");
         showUnavailableStatus();

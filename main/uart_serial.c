@@ -119,7 +119,6 @@ static void uart_command_task(void *argument)
     char line[SERIAL_LINE_SIZE];
     size_t line_length = 0;
     bool discard_line = false;
-    TickType_t last_status_tick = xTaskGetTickCount();
 
     for (;;) {
         int received = uart_read_bytes(
@@ -145,11 +144,6 @@ static void uart_command_task(void *argument)
             }
         }
 
-        TickType_t now = xTaskGetTickCount();
-        if ((now - last_status_tick) >= pdMS_TO_TICKS(1000)) {
-            (void)send_status();
-            last_status_tick = now;
-        }
     }
 }
 
