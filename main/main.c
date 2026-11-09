@@ -10,6 +10,7 @@
 #include "motor_control.h"
 #include "spiffs_fs.h"
 #include "wifi_ap.h"
+#include "uart_serial.h"
 
 static const char *TAG = "APP";
 
@@ -25,6 +26,7 @@ void app_main(void)
 	ESP_ERROR_CHECK(motor_control_init());
 	ESP_ERROR_CHECK(alarma_control_init());
 	ESP_ERROR_CHECK(dht11_sensor_start());
+	ESP_ERROR_CHECK(uart_serial_start());
 	ESP_ERROR_CHECK(ir_remote_start());
 	ESP_ERROR_CHECK(spiffs_fs_init());
 	ESP_ERROR_CHECK(wifi_ap_start());

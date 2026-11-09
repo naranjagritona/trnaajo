@@ -1,6 +1,6 @@
 idf_component_register(
     SRCS
-        "main.c"
+       
         "dht11_sensor.c"
         "led_control.c"
         "alarma_control.c"

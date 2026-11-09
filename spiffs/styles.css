@@ -120,6 +120,25 @@ a {
     font-weight: 650;
 }
 
+.connection-button {
+    cursor: pointer;
+    font: inherit;
+}
+
+.connection-button:hover:not(:disabled) {
+    border-color: rgba(96, 225, 192, .45);
+}
+
+.connection-button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+.connection-button:disabled {
+    cursor: not-allowed;
+    opacity: .7;
+}
+
 .connection-dot,
 .status-indicator,
 .live-pulse {
