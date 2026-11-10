@@ -1,4 +1,5 @@
 $ErrorActionPreference = "Stop"
+# Busca la carpeta del script; si se ejecuta desde la consola, usa la carpeta actual.
 $scriptPath = $MyInvocation.MyCommand.Path
 $scriptDirectory = $null
 if ($scriptPath) {
@@ -10,6 +11,7 @@ if (-not $scriptDirectory) {
 $scriptDirectory = [IO.Path]::GetFullPath($scriptDirectory)
 $root = $scriptDirectory
 $spiffsDirectory = Join-Path $scriptDirectory "spiffs"
+# Usa los archivos que están junto al script o, si no están, los de la carpeta spiffs.
 if (-not [IO.File]::Exists((Join-Path $root "index.html"))) {
     if ([IO.File]::Exists((Join-Path $spiffsDirectory "index.html"))) {
         $root = [IO.Path]::GetFullPath($spiffsDirectory)
@@ -17,6 +19,7 @@ if (-not [IO.File]::Exists((Join-Path $root "index.html"))) {
         throw "No se encontró index.html junto al script ni en la subcarpeta spiffs de '$scriptDirectory'."
     }
 }
+# Prepara la ruta para impedir que una petición acceda fuera de la carpeta del dashboard.
 $rootPrefix = $root
 if (-not $rootPrefix.EndsWith([IO.Path]::DirectorySeparatorChar)) {
     $rootPrefix += [IO.Path]::DirectorySeparatorChar
@@ -24,6 +27,7 @@ if (-not $rootPrefix.EndsWith([IO.Path]::DirectorySeparatorChar)) {
 $listener = New-Object System.Net.HttpListener
 $listener.Prefixes.Add("http://localhost:8000/")
 
+# Inicia el servidor y atiende las solicitudes del navegador.
 try {
     $listener.Start()
     Write-Host "Dashboard disponible en http://localhost:8000"
@@ -34,6 +38,7 @@ try {
         $context = $listener.GetContext()
         $response = $context.Response
 
+        # Solo entrega archivos solicitados con GET y ubicados en la carpeta permitida.
         try {
             if ($context.Request.HttpMethod -ne "GET") {
                 $response.StatusCode = 405
@@ -65,11 +70,13 @@ try {
             $response.OutputStream.Write($bytes, 0, $bytes.Length)
         }
         finally {
+            # Cierra la respuesta incluso si hubo un problema al leer el archivo.
             $response.Close()
         }
     }
 }
 finally {
+    # Detiene y libera el servidor al salir del script.
     if ($listener.IsListening) {
         $listener.Stop()
     }

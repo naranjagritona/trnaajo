@@ -29,6 +29,7 @@ let statusInterval = null;
 let statusRequestPending = false;
 let wifiRequestPending = false;
 
+// Actualiza el indicador de conexión y activa o bloquea los botones.
 function setConnection(connected, label) {
     connectionStatus.dataset.state = connected ? "connected" : "disconnected";
     connectButton.dataset.state = connected ? "connected" : "disconnected";
@@ -36,6 +37,7 @@ function setConnection(connected, label) {
     refreshButtonStates();
 }
 
+// Habilita los controles según el modo usado y la conexión actual.
 function refreshButtonStates() {
     const ready = serialMode ? serialReady : connectionStatus.dataset.state === "connected";
     document.querySelectorAll(".controls button[type='submit']").forEach((button) => {
@@ -44,6 +46,7 @@ function refreshButtonStates() {
     connectButton.disabled = !window.isSecureContext || !("serial" in navigator);
 }
 
+// Muestra el estado de un dispositivo y actualiza el aspecto de su tarjeta.
 function showDeviceState(element, container, state, label) {
     element.textContent = label;
     container.dataset.state = state;
@@ -51,6 +54,7 @@ function showDeviceState(element, container, state, label) {
     if (card) card.dataset.state = state;
 }
 
+// Limpia los datos y muestra que no hay información disponible.
 function showUnavailableStatus() {
     showDeviceState(alarmStatus, alarmStatusContainer, "unknown", "Estado no disponible");
     showDeviceState(ledStatus, ledStatusContainer, "unknown", "Estado no disponible");
@@ -60,6 +64,7 @@ function showUnavailableStatus() {
     showDeviceState(sensorStatus, sensorStatusContainer, "unknown", "Lectura no disponible");
 }
 
+// Comprueba los datos recibidos y actualiza el panel con los estados.
 function applyStatus(status) {
     const alarm = status.state;
     const alarmLabels = {
@@ -91,6 +96,7 @@ function applyStatus(status) {
     }
 }
 
+// Finaliza el comando pendiente y comunica si se completó o falló.
 function finishCommand(error) {
     if (!pendingCommand) return;
     window.clearTimeout(pendingCommand.timeout);
@@ -101,6 +107,7 @@ function finishCommand(error) {
     else command.resolve();
 }
 
+// Interpreta cada línea recibida por UART: estado, confirmación o error.
 function handleSerialLine(value) {
     const line = value.trim();
     if (!line) return;
@@ -123,6 +130,7 @@ function handleSerialLine(value) {
     else if (line.indexOf("ERR ") === 0) finishCommand(new Error(line.substring(4)));
 }
 
+// Envía una línea de texto al ESP32 por el puerto serial abierto.
 async function writeSerialLine(line) {
     if (!serialPort || !serialPort.writable) {
         throw new Error("El puerto serial no está abierto.");
@@ -135,6 +143,7 @@ async function writeSerialLine(line) {
     }
 }
 
+// Lee continuamente las respuestas UART y las entrega para su interpretación.
 async function readSerial(port) {
     try {
         while (serialPort === port && port.readable) {
@@ -160,6 +169,7 @@ async function readSerial(port) {
     }
 }
 
+// Cierra el puerto, detiene las consultas periódicas y limpia el panel.
 async function closeSerial(reason) {
     const port = serialPort;
     serialPort = null;
@@ -183,6 +193,7 @@ async function closeSerial(reason) {
     showUnavailableStatus();
 }
 
+// Pide al ESP32 su estado actual y muestra un aviso si no responde.
 async function requestSerialStatus() {
     if (!serialConnected || pendingCommand || statusRequestPending) return;
     statusRequestPending = true;
@@ -200,6 +211,7 @@ async function requestSerialStatus() {
     }
 }
 
+// Envía una orden al ESP32 y espera su confirmación.
 function sendSerialCommand(command) {
     if (!serialConnected || !serialReady || pendingCommand) {
         return Promise.reject(new Error("Primero conecta el puerto y espera la respuesta del ESP32."));
@@ -216,6 +228,7 @@ function sendSerialCommand(command) {
     });
 }
 
+// Abre el selector del navegador y conecta el ESP32 por UART.
 async function connectSerial() {
     if (!window.isSecureContext || !("serial" in navigator)) {
         setConnection(false, "Serial requiere Chrome o Edge en localhost");
@@ -241,11 +254,13 @@ async function connectSerial() {
     }
 }
 
+// Conecta o desconecta el puerto al pulsar el botón del panel.
 connectButton.addEventListener("click", async () => {
     if (serialConnected) await closeSerial("Puerto serial desconectado.");
     else await connectSerial();
 });
 
+// Convierte cada formulario en una orden serial o una petición HTTP.
 document.querySelectorAll(".controls form").forEach((form) => {
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
@@ -276,6 +291,7 @@ document.querySelectorAll(".controls form").forEach((form) => {
     });
 });
 
+// Consulta periódicamente los estados cuando el panel se usa por Wi-Fi.
 async function refreshWifiStatus() {
     if (wifiRequestPending) return;
     wifiRequestPending = true;
@@ -292,6 +308,7 @@ async function refreshWifiStatus() {
     }
 }
 
+// Inicializa el panel según se haya abierto localmente o desde el ESP32.
 if (serialMode) {
     connectionLabel.textContent = "Conecta el ESP32 por serial";
     showUnavailableStatus();

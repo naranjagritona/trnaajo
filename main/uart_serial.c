@@ -24,6 +24,7 @@
 
 static const char *TAG = "UART";
 
+// Envía una línea de texto por UART y avisa si no se enviaron todos los datos.
 static esp_err_t send_line(const char *line)
 {
     size_t length = strlen(line);
@@ -31,6 +32,7 @@ static esp_err_t send_line(const char *line)
     return sent == (int)length ? ESP_OK : ESP_FAIL;
 }
 
+// Devuelve un mensaje de error al dashboard por el puerto serial.
 static void send_error(const char *message)
 {
     char response[96];
@@ -40,6 +42,7 @@ static void send_error(const char *message)
     }
 }
 
+// Reúne los estados actuales y los envía al dashboard en formato JSON.
 static esp_err_t send_status(void)
 {
     machine_state_t alarm_state = alarma_control_get_state();
@@ -81,6 +84,7 @@ static esp_err_t send_status(void)
     return send_line(response);
 }
 
+// Ejecuta el comando recibido y responde si se pudo completar.
 static void process_command(const char *command)
 {
     esp_err_t err;
@@ -112,6 +116,7 @@ static void process_command(const char *command)
     (void)send_line("OK\r\n");
 }
 
+// Recibe los datos seriales, los separa en comandos y los procesa.
 static void uart_command_task(void *argument)
 {
     (void)argument;
@@ -147,6 +152,7 @@ static void uart_command_task(void *argument)
     }
 }
 
+// Configura UART2 en los pines definidos y pone en marcha la tarea receptora.
 esp_err_t uart_serial_start(void)
 {
     const uart_config_t config = {
