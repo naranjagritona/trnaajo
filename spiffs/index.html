@@ -3,174 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#0b1220">
-    <title>Dashboard ESP-32 | Panel</title>
-    <link rel="stylesheet" href="/styles.css">
-    <script src="/app.js" defer></script>
+    <meta name="theme-color" content="#101b2b">
+    <title>Panel de control | Nodo 32</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
 </head>
 <body>
-    <main class="dashboard">
-        <header class="topbar">
-            <a class="brand" href="/" aria-label="Panel de control ESP32">
-                <span class="brand-mark" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <path d="M5 12h3l2-6 4 12 2-6h3" />
-                    </svg>
-                </span>
-                <span class="brand-name">ESP<span>32</span></span>
-            </a>
-            <div class="topbar-meta">
-                <button class="connection connection-button" id="serial-connect" type="button">
-                    <span class="connection-dot" aria-hidden="true"></span>
-                    <span id="serial-connect-label">Conectar por serial</span>
-                </button>
-                <a class="network-link" href="http://esp32-control.local" target="_blank" rel="noopener noreferrer">
-                    esp32-control.local
-                    <span aria-hidden="true">↗</span>
-                </a>
-                <div class="connection" id="connection-status" data-state="unknown" role="status">
-                    <span class="connection-dot" aria-hidden="true"></span>
-                    <span id="connection-label">Conectando...</span>
-                </div>
-            </div>
-        </header>
+    <header class="barra">
+        <a class="marca" href="#inicio">
+            <span class="marca-icono">N</span>
+            NODO <b>32</b>
+        </a>
 
-        <section class="welcome">
+        <button class="menu-boton" id="menu-boton" aria-label="Abrir menú" aria-expanded="false">
+            ☰
+        </button>
+
+        <nav class="menu" id="menu">
+            <a href="#inicio">Inicio</a>
+            <a href="#controles">Controles</a>
+            <a href="#sensores">Sensores</a>
+            <a href="#estados">Estados</a>
+        </nav>
+
+        <div class="conexion" id="connection-status" data-state="unknown" role="status">
+            <i></i>
+            <span id="connection-label">Conectando…</span>
+        </div>
+    </header>
+
+    <main class="contenedor" id="inicio">
+        <section class="portada">
             <div>
-                <p class="eyebrow"><span class="eyebrow-line"></span> DASHBOARD ESP32</p>
-                <h1>salon 1<br><span>conectado</span></h1>
-                <p class="welcome-copy">Estado en vivo de tus dispositivos y del ambiente.</p>
+                <p class="sobrelinea">PANEL DE AUTOMATIZACIÓN</p>
+                <h1>Salón 1</h1>
+                <p class="bajada">Controlá tus dispositivos y consultá el ambiente.</p>
             </div>
-            <div class="live-badge">2
-                <span class="live-pulse" aria-hidden="true"></span>
-                ACTUALIZACIÓN EN VIVO
+            <a class="enlace-red" href="http://esp32-control.local" target="_blank" rel="noopener noreferrer">
+                Abrir dispositivo ↗
+            </a>
+        </section>
+
+        <section id="estados" class="seccion">
+            <div class="titulo-seccion">
+                <div>
+                    <p class="sobrelinea">RESUMEN</p>
+                    <h2>Estado del sistema</h2>
+                </div>
+                <span class="actualizacion"><i></i> En vivo</span>
+            </div>
+
+            <div class="rejilla resumen">
+                <article class="tarjeta estado-card" id="alarm-card" data-state="unknown">
+                    <span class="icono">◉</span>
+                    <div>
+                        <p>Buzzer / alarma</p>
+                        <strong id="alarm-status">Consultando…</strong>
+                    </div>
+                </article>
+
+                <article class="tarjeta estado-card" id="led-card" data-state="unknown">
+                    <span class="icono">☼</span>
+                    <div>
+                        <p>Iluminación</p>
+                        <strong id="led-status">Consultando…</strong>
+                    </div>
+                </article>
+
+                <article class="tarjeta estado-card" id="motor-card" data-state="unknown">
+                    <span class="icono">⟳</span>
+                    <div>
+                        <p>Relé</p>
+                        <strong id="motor-status">Consultando…</strong>
+                    </div>
+                </article>
+
+                <article class="tarjeta estado-card" id="sensor-card" data-state="unknown">
+                    <span class="icono">⌁</span>
+                    <div>
+                        <p>Sensor ambiental</p>
+                        <strong id="sensor-status">Esperando lectura…</strong>
+                    </div>
+                </article>
             </div>
         </section>
 
-        <section class="device-grid" aria-label="Dispositivos y sensores">
-            <article class="device-card led-card" data-state="unknown" aria-labelledby="led-title">
-                <div class="card-heading">
-                    <div class="device-icon led-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none">
-                            <path d="M9 18h6m-5 3h4m-2-19a7 7 0 0 0-4 12.75c.5.35 1 1.25 1 2.25h6c0-1 .5-1.9 1-2.25A7 7 0 0 0 12 2Z" />
-                        </svg>
-                    </div>
-                    <div class="card-title">
-                        <p class="eyebrow">ILUMINACIÓN</p>
-                        <h2 id="led-title">LED principal</h2>
-                    </div>
-                    <span class="gpio-tag">GPIO 22</span>
+        <section id="controles" class="seccion">
+            <div class="titulo-seccion">
+                <div>
+                    <p class="sobrelinea">ACCIONES</p>
+                    <h2>Controles</h2>
                 </div>
-                <div class="device-status led-status" data-state="unknown">
-                    <span class="status-indicator" aria-hidden="true"></span>
-                    <span id="led-status" role="status">Consultando estado...</span>
-                </div>
-                <div class="controls">
-                    <form action="/led/on" method="post">
-                        <button class="button button-on" type="submit">Encender</button>
-                    </form>
-                    <form action="/led/off" method="post">
-                        <button class="button button-off" type="submit">Apagar</button>
-                    </form>
-                </div>
+            </div>
 
-            </article>
+            <div class="rejilla controles-grid">
+                <article class="tarjeta dispositivo">
+                    <div class="cabecera-tarjeta">
+                        <span class="icono">☼</span>
+                        <div>
+                            <p>ILUMINACIÓN</p>
+                            <h3>Luz principal</h3>
+                        </div>
+                    </div>
+                    <div class="botones">
+                        <form action="/led/on" method="post">
+                            <button class="primario" type="submit">Encender</button>
+                        </form>
+                        <form action="/led/off" method="post">
+                            <button class="secundario" type="submit">Apagar</button>
+                        </form>
+                    </div>
+                </article>
 
-            <article class="device-card motor-card" data-state="unknown" aria-labelledby="motor-title">
-                <div class="card-heading">
-                    <div class="device-icon motor-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none">
-                            <path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.64 5.64l2.12 2.12m8.48 8.48 2.12 2.12m0-12.72-2.12 2.12m-8.48 8.48-2.12 2.12" />
-                            <circle cx="12" cy="12" r="4" />
-                        </svg>
+                <article class="tarjeta dispositivo">
+                    <div class="cabecera-tarjeta">
+                        <span class="icono violeta">⟳</span>
+                        <div>
+                            <p>ACCIONAMIENTO</p>
+                            <h3>Relé</h3>
+                        </div>
                     </div>
-                    <div class="card-title">
-                        <p class="eyebrow">ACCIONAMIENTO</p>
-                        <h2 id="motor-title">Motor</h2>
+                    <div class="botones">
+                        <form action="/motor/on" method="post">
+                            <button class="primario" type="submit">Encender</button>
+                        </form>
+                        <form action="/motor/off" method="post">
+                            <button class="secundario" type="submit">Apagar</button>
+                        </form>
                     </div>
-                    <span class="gpio-tag">GPIO 16</span>
-                </div>
-                <div class="device-status motor-status" data-state="unknown">
-                    <span class="status-indicator" aria-hidden="true"></span>
-                    <span id="motor-status" role="status">Consultando estado...</span>
-                </div>
-                <div class="controls">
-                    <form action="/motor/on" method="post">
-                        <button class="button button-on" type="submit">Encender</button>
-                    </form>
-                    <form action="/motor/off" method="post">
-                        <button class="button button-off" type="submit">Apagar</button>
-                    </form>
-                </div>
+                </article>
 
-            </article>
-
-            <article class="device-card alarm-card" data-state="unknown" aria-labelledby="alarm-title">
-                <div class="card-heading">
-                    <div class="device-icon alarm-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none">
-                            <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Zm-8 12h4" />
-                        </svg>
+                <article class="tarjeta dispositivo alarma" id="alarm-control-card">
+                    <div class="cabecera-tarjeta">
+                        <span class="icono naranja">◉</span>
+                        <div>
+                            <p>BUZZER</p>
+                            <h3>Alarma sonora</h3>
+                        </div>
                     </div>
-                    <div class="card-title">
-                        <p class="eyebrow">SEGURIDAD</p>
-                        <h2 id="alarm-title">Sistema de alarma</h2>
+                    <div class="botones">
+                        <form action="/alarm/on" method="post">
+                            <button class="alerta" type="submit">Activar alarma</button>
+                        </form>
+                        <form action="/alarm/off" method="post">
+                            <button class="secundario" type="submit">Desactivar</button>
+                        </form>
                     </div>
-                    <span class="gpio-tag">GPIO 25 · 26 · 27</span>
-                </div>
-                <div class="device-status alarm-status" data-state="unknown">
-                    <span class="status-indicator" aria-hidden="true"></span>
-                    <span id="alarm-status" role="status">Consultando estado...</span>
-                </div>
-                <div class="controls">
-                    <form action="/alarm/on" method="post">
-                        <button class="button button-on" type="submit">Activar alarma</button>
-                    </form>
-                    <form action="/alarm/off" method="post">
-                        <button class="button button-off" type="submit">Desactivar</button>
-                    </form>
-                </div>
-
-            </article>
-
-            <article class="device-card sensor-card" data-state="unknown" aria-labelledby="sensor-title">
-                <div class="card-heading">
-                    <div class="device-icon sensor-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none">
-                            <path d="M14 14.76V5a2 2 0 0 0-4 0v9.76a4 4 0 1 0 4 0Z" />
-                            <path d="M12 12v6" />
-                        </svg>
-                    </div>
-                    <div class="card-title">
-                        <p class="eyebrow">SENSOR AMBIENTAL</p>
-                        <h2 id="sensor-title">Ambiente</h2>
-                    </div>
-                    <span class="gpio-tag">DHT11 · GPIO 19</span>
-                </div>
-                <div class="device-status sensor-status" data-state="unknown">
-                    <span class="status-indicator" aria-hidden="true"></span>
-                    <span id="sensor-status" role="status">Esperando primera lectura...</span>
-                </div>
-                <div class="sensor-readings">
-                    <div class="reading">
-                        <span class="reading-label">Temperatura</span>
-                        <strong id="sensor-temperature">--.- <span>°C</span></strong>
-                    </div>
-                    <div class="reading">
-                        <span class="reading-label">Humedad</span>
-                        <strong id="sensor-humidity">--.- <span>%</span></strong>
-                    </div>
-                </div>
-                <p class="card-footnote">Mediciones actualizadas cada 2 segundos.</p>
-            </article>
+                </article>
+            </div>
         </section>
 
-        <footer class="footer">
-            <span class="footer-mark" aria-hidden="true">N32</span>
-            <span>Panel local ESP32</span>
-            <span class="footer-separator">·</span>
-            <span>Control simple. Información en vivo.</span>
-        </footer>
+        <section id="sensores" class="seccion">
+            <div class="titulo-seccion">
+                <div>
+                    <p class="sobrelinea">LECTURAS</p>
+                    <h2>Ambiente</h2>
+                </div>
+                <span class="actualizacion">Actualización cada segundo</span>
+            </div>
+
+            <div class="rejilla ambiente-grid">
+                <article class="tarjeta lectura">
+                    <div>
+                        <p>Temperatura</p>
+                        <strong id="sensor-temperature">--.- <small>°C</small></strong>
+                    </div>
+                    <div class="grafico">
+                        <canvas id="temperature-chart" aria-label="Gráfico de temperatura"></canvas>
+                    </div>
+                </article>
+
+                <article class="tarjeta lectura">
+                    <div>
+                        <p>Humedad</p>
+                        <strong id="sensor-humidity">--.- <small>%</small></strong>
+                    </div>
+                    <div class="grafico">
+                        <canvas id="humidity-chart" aria-label="Gráfico de humedad"></canvas>
+                    </div>
+                </article>
+
+                <article class="tarjeta sensibilidad">
+                    <p class="sobrelinea">AJUSTE DEL SENSOR</p>
+                    <h3>Sensibilidad</h3>
+                    <p>Este control es visual. Para cambiar el sensor físico hace falta soporte en el ESP32.</p>
+                    <label for="sensibilidad">
+                        Nivel <output id="sensibilidad-valor">50%</output>
+                    </label>
+                    <input id="sensibilidad" type="range" min="0" max="100" value="50">
+                </article>
+            </div>
+        </section>
+
+        <footer>Panel local ESP32 <span>·</span> Nodo 32</footer>
     </main>
 </body>
 </html>
