@@ -12,7 +12,7 @@
     <header class="barra">
         <a class="marca" href="#inicio">
             <span class="marca-icono">N</span>
-            NODO <b>32</b>
+            ESP <b>32</b>
         </a>
 
         <button class="menu-boton" id="menu-boton" aria-label="Abrir menú" aria-expanded="false">
@@ -26,9 +26,14 @@
             <a href="#estados">Estados</a>
         </nav>
 
-        <div class="conexion" id="connection-status" data-state="unknown" role="status">
-            <i></i>
-            <span id="connection-label">Conectando…</span>
+        <div class="barra-acciones">
+            <button class="serial-boton" id="serial-connect" type="button">
+                Conectar por serial
+            </button>
+            <div class="conexion" id="connection-status" data-state="unknown" role="status">
+                <i></i>
+                <span id="connection-label">Conectando…</span>
+            </div>
         </div>
     </header>
 
@@ -39,9 +44,7 @@
                 <h1>Salón 1</h1>
                 <p class="bajada">Controlá tus dispositivos y consultá el ambiente.</p>
             </div>
-            <a class="enlace-red" href="http://esp32-control.local" target="_blank" rel="noopener noreferrer">
-                Abrir dispositivo ↗
-            </a>
+
         </section>
 
         <section id="estados" class="seccion">
@@ -119,8 +122,8 @@
                     <div class="cabecera-tarjeta">
                         <span class="icono violeta">⟳</span>
                         <div>
-                            <p>ACCIONAMIENTO</p>
-                            <h3>Relé</h3>
+                            <p>MOTOR</p>
+                            <h3>Motor</h3>
                         </div>
                     </div>
                     <div class="botones">
@@ -186,7 +189,6 @@
                 <article class="tarjeta sensibilidad">
                     <p class="sobrelinea">AJUSTE DEL SENSOR</p>
                     <h3>Sensibilidad</h3>
-                    <p>Este control es visual. Para cambiar el sensor físico hace falta soporte en el ESP32.</p>
                     <label for="sensibilidad">
                         Nivel <output id="sensibilidad-valor">50%</output>
                     </label>
