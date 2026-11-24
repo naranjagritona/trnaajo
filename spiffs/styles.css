@@ -11,24 +11,25 @@ body {
     background-color: #e2e8f0;
 }
 
-/* junta el menu de la izquierda y el contenido de la derecha */
+/* distribuye el menu y el contenido en dos sectores: 1 fraccion y 4 fracciones */
 .layout-principal {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(240px, 1fr) minmax(0, 4fr);
+    grid-template-areas: "menu contenido";
     min-height: 100vh;
 }
 
-/* menu lateral izquierdo fijo */
+/* menu lateral izquierdo */
 .barra-lateral {
-    width: 240px;
+    grid-area: menu;
     background-color: #162436;
     color: #f1f5f9;
     display: flex;
     flex-direction: column;
     border-right: 1px solid #cbd5e1;
-    position: fixed;
+    position: sticky;
     top: 0;
-    bottom: 0;
-    left: 0;
+    height: 100vh;
     z-index: 100;
 }
 
@@ -93,10 +94,9 @@ body {
     border-top: 1px solid #263952;
 }
 
-/* deja lugar a la izquierda para que no tape el menu */
+/* el contenido ocupa el segundo sector de la cuadrícula */
 .contenido-principal {
-    margin-left: 240px;
-    flex: 1;
+    grid-area: contenido;
     display: flex;
     flex-direction: column;
     min-width: 0;
@@ -467,11 +467,17 @@ footer {
 
 @media (max-width: 768px) {
     .layout-principal {
-        flex-direction: column;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas: "contenido";
     }
 
     .barra-lateral {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
         width: 240px;
+        height: auto;
         display: none;
         box-shadow: 4px 0 15px rgba(0, 0, 0, 0.25);
     }
