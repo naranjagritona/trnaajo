@@ -3,201 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#101b2b">
     <title>Panel de control | Nodo 32</title>
     <link rel="stylesheet" href="styles.css">
     <script src="app.js" defer></script>
 </head>
 <body>
-    <header class="barra">
-        <a class="marca" href="#inicio">
-            <span class="marca-icono">N</span>
-            ESP <b>32</b>
-        </a>
-
-        <button class="menu-boton" id="menu-boton" aria-label="Abrir menú" aria-expanded="false">
-            ☰
-        </button>
-
-        <nav class="menu" id="menu">
-            <a href="#inicio">Inicio</a>
-            <a href="#controles">Controles</a>
-            <a href="#sensores">Sensores</a>
-            <a href="#estados">Estados</a>
-        </nav>
-
-        <div class="barra-acciones">
-            <button class="serial-boton" id="serial-connect" type="button">
-                Conectar por serial
-            </button>
-            <div class="conexion" id="connection-status" data-state="unknown" role="status">
-                <i></i>
-                <span id="connection-label">Conectando…</span>
+    <div class="layout-principal">
+        <!-- Menú lateral izquierdo -->
+        <aside class="barra-lateral" id="menu">
+            <div class="marca">
+                <span class="marca-icono">N</span>
+                ESP <b>32</b>
             </div>
+
+            <nav class="menu-enlaces">
+                <a href="#inicio">Inicio</a>
+                <a href="#estados">Estados</a>
+                <a href="#controles">Controles</a>
+                <a href="#sensores">Sensores</a>
+            </nav>
+
+            <div class="lateral-footer">
+                <span>Nodo 32</span>
+            </div>
+        </aside>
+
+        <!-- Contenido principal de la página -->
+        <div class="contenido-principal">
+            <header class="barra-superior">
+                <button class="menu-boton" id="menu-boton" aria-label="Abrir menú" aria-expanded="false">
+                    ☰
+                </button>
+
+                <div class="barra-acciones">
+                    <button class="serial-boton" id="serial-connect" type="button">
+                        Conectar por serial
+                    </button>
+                    <div class="conexion" id="connection-status" data-state="unknown" role="status">
+                        <i></i>
+                        <span id="connection-label">Conectando…</span>
+                    </div>
+                </div>
+            </header>
+
+            <main class="contenedor" id="inicio">
+                <section class="portada">
+                    <div>
+                        <p class="sobrelinea">PANEL DE AUTOMATIZACIÓN</p>
+                        <h1>Salón 1</h1>
+                        <p class="bajada">Controlá tus dispositivos y consultá el ambiente.</p>
+                    </div>
+                </section>
+
+                <section id="estados" class="seccion">
+                    <div class="titulo-seccion">
+                        <div>
+                            <p class="sobrelinea">RESUMEN</p>
+                            <h2>Estado del sistema</h2>
+                        </div>
+                        <span class="actualizacion"><i></i> En vivo</span>
+                    </div>
+
+                    <div class="rejilla resumen">
+                        <article class="tarjeta estado-card" id="alarm-card" data-state="unknown">
+                            <span class="icono">◉</span>
+                            <div>
+                                <p>Buzzer / alarma</p>
+                                <strong id="alarm-status">Consultando…</strong>
+                            </div>
+                        </article>
+
+                        <article class="tarjeta estado-card" id="led-card" data-state="unknown">
+                            <span class="icono">☼</span>
+                            <div>
+                                <p>Iluminación</p>
+                                <strong id="led-status">Consultando…</strong>
+                            </div>
+                        </article>
+
+                        <article class="tarjeta estado-card" id="motor-card" data-state="unknown">
+                            <span class="icono">⟳</span>
+                            <div>
+                                <p>Aire Acondicionado</p>
+                                <strong id="motor-status">Consultando…</strong>
+                            </div>
+                        </article>
+
+                        <article class="tarjeta estado-card" id="sensor-card" data-state="unknown">
+                            <span class="icono">⌁</span>
+                            <div>
+                                <p>Sensor ambiental</p>
+                                <strong id="sensor-status">Esperando lectura…</strong>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+
+                <section id="controles" class="seccion">
+                    <div class="titulo-seccion">
+                        <div>
+                            <p class="sobrelinea">ACCIONES</p>
+                            <h2>Controles</h2>
+                        </div>
+                    </div>
+
+                    <div class="rejilla controles-grid">
+                        <article class="tarjeta dispositivo">
+                            <div class="cabecera-tarjeta">
+                                <span class="icono">☼</span>
+                                <div>
+                                    <p>ILUMINACIÓN</p>
+                                    <h3>Luz principal</h3>
+                                </div>
+                            </div>
+                            <div class="botones">
+                                <form action="/led/on" method="post">
+                                    <button class="primario" type="submit">Encender</button>
+                                </form>
+                                <form action="/led/off" method="post">
+                                    <button class="secundario" type="submit">Apagar</button>
+                                </form>
+                            </div>
+                        </article>
+
+                        <article class="tarjeta dispositivo">
+                            <div class="cabecera-tarjeta">
+                                <span class="icono violeta">⟳</span>
+                                <div>
+                                    <p>MOTOR</p>
+                                    <h3>Aire Acondicionado</h3>
+                                </div>
+                            </div>
+                            <div class="botones">
+                                <form action="/motor/on" method="post">
+                                    <button class="primario" type="submit">Encender</button>
+                                </form>
+                                <form action="/motor/off" method="post">
+                                    <button class="secundario" type="submit">Apagar</button>
+                                </form>
+                            </div>
+                        </article>
+
+                        <article class="tarjeta dispositivo alarma" id="alarm-control-card">
+                            <div class="cabecera-tarjeta">
+                                <span class="icono naranja">◉</span>
+                                <div>
+                                    <p>BUZZER</p>
+                                    <h3>Alarma sonora</h3>
+                                </div>
+                            </div>
+                            <div class="botones">
+                                <form action="/alarm/on" method="post">
+                                    <button class="alerta" type="submit">Activar alarma</button>
+                                </form>
+                                <form action="/alarm/off" method="post">
+                                    <button class="secundario" type="submit">Desactivar</button>
+                                </form>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+
+                <section id="sensores" class="seccion">
+                    <div class="titulo-seccion">
+                        <div>
+                            <p class="sobrelinea">LECTURAS</p>
+                            <h2>Ambiente</h2>
+                        </div>
+                        <span class="actualizacion">Actualización cada 2 segundos</span>
+                    </div>
+
+                    <div class="rejilla ambiente-grid">
+                        <article class="tarjeta lectura">
+                            <div>
+                                <p>Temperatura</p>
+                                <strong id="sensor-temperature">--.- <small>°C</small></strong>
+                            </div>
+                            <div class="grafico">
+                                <canvas id="temperature-chart" aria-label="Gráfico de temperatura"></canvas>
+                            </div>
+                        </article>
+
+                        <article class="tarjeta lectura">
+                            <div>
+                                <p>Humedad</p>
+                                <strong id="sensor-humidity">--.- <small>%</small></strong>
+                            </div>
+                            <div class="grafico">
+                                <canvas id="humidity-chart" aria-label="Gráfico de humedad"></canvas>
+                            </div>
+                        </article>
+
+                        <article class="tarjeta sensibilidad">
+                            <p class="sobrelinea">AJUSTE DEL SENSOR</p>
+                            <h3>Sensibilidad</h3>
+                            <label for="sensibilidad">
+                                Nivel <output id="sensibilidad-valor">50%</output>
+                            </label>
+                            <input id="sensibilidad" type="range" min="0" max="100" value="50">
+                        </article>
+                    </div>
+                </section>
+
+                <footer>Panel local ESP32 <span>·</span> Nodo 32</footer>
+            </main>
         </div>
-    </header>
-
-    <main class="contenedor" id="inicio">
-        <section class="portada">
-            <div>
-                <p class="sobrelinea">PANEL DE AUTOMATIZACIÓN</p>
-                <h1>Salón 1</h1>
-                <p class="bajada">Controlá tus dispositivos y consultá el ambiente.</p>
-            </div>
-
-        </section>
-
-        <section id="estados" class="seccion">
-            <div class="titulo-seccion">
-                <div>
-                    <p class="sobrelinea">RESUMEN</p>
-                    <h2>Estado del sistema</h2>
-                </div>
-                <span class="actualizacion"><i></i> En vivo</span>
-            </div>
-
-            <div class="rejilla resumen">
-                <article class="tarjeta estado-card" id="alarm-card" data-state="unknown">
-                    <span class="icono">◉</span>
-                    <div>
-                        <p>Buzzer / alarma</p>
-                        <strong id="alarm-status">Consultando…</strong>
-                    </div>
-                </article>
-
-                <article class="tarjeta estado-card" id="led-card" data-state="unknown">
-                    <span class="icono">☼</span>
-                    <div>
-                        <p>Iluminación</p>
-                        <strong id="led-status">Consultando…</strong>
-                    </div>
-                </article>
-
-                <article class="tarjeta estado-card" id="motor-card" data-state="unknown">
-                    <span class="icono">⟳</span>
-                    <div>
-                        <p>Relé</p>
-                        <strong id="motor-status">Consultando…</strong>
-                    </div>
-                </article>
-
-                <article class="tarjeta estado-card" id="sensor-card" data-state="unknown">
-                    <span class="icono">⌁</span>
-                    <div>
-                        <p>Sensor ambiental</p>
-                        <strong id="sensor-status">Esperando lectura…</strong>
-                    </div>
-                </article>
-            </div>
-        </section>
-
-        <section id="controles" class="seccion">
-            <div class="titulo-seccion">
-                <div>
-                    <p class="sobrelinea">ACCIONES</p>
-                    <h2>Controles</h2>
-                </div>
-            </div>
-
-            <div class="rejilla controles-grid">
-                <article class="tarjeta dispositivo">
-                    <div class="cabecera-tarjeta">
-                        <span class="icono">☼</span>
-                        <div>
-                            <p>ILUMINACIÓN</p>
-                            <h3>Luz principal</h3>
-                        </div>
-                    </div>
-                    <div class="botones">
-                        <form action="/led/on" method="post">
-                            <button class="primario" type="submit">Encender</button>
-                        </form>
-                        <form action="/led/off" method="post">
-                            <button class="secundario" type="submit">Apagar</button>
-                        </form>
-                    </div>
-                </article>
-
-                <article class="tarjeta dispositivo">
-                    <div class="cabecera-tarjeta">
-                        <span class="icono violeta">⟳</span>
-                        <div>
-                            <p>MOTOR</p>
-                            <h3>Motor</h3>
-                        </div>
-                    </div>
-                    <div class="botones">
-                        <form action="/motor/on" method="post">
-                            <button class="primario" type="submit">Encender</button>
-                        </form>
-                        <form action="/motor/off" method="post">
-                            <button class="secundario" type="submit">Apagar</button>
-                        </form>
-                    </div>
-                </article>
-
-                <article class="tarjeta dispositivo alarma" id="alarm-control-card">
-                    <div class="cabecera-tarjeta">
-                        <span class="icono naranja">◉</span>
-                        <div>
-                            <p>BUZZER</p>
-                            <h3>Alarma sonora</h3>
-                        </div>
-                    </div>
-                    <div class="botones">
-                        <form action="/alarm/on" method="post">
-                            <button class="alerta" type="submit">Activar alarma</button>
-                        </form>
-                        <form action="/alarm/off" method="post">
-                            <button class="secundario" type="submit">Desactivar</button>
-                        </form>
-                    </div>
-                </article>
-            </div>
-        </section>
-
-        <section id="sensores" class="seccion">
-            <div class="titulo-seccion">
-                <div>
-                    <p class="sobrelinea">LECTURAS</p>
-                    <h2>Ambiente</h2>
-                </div>
-                <span class="actualizacion">Actualización cada segundo</span>
-            </div>
-
-            <div class="rejilla ambiente-grid">
-                <article class="tarjeta lectura">
-                    <div>
-                        <p>Temperatura</p>
-                        <strong id="sensor-temperature">--.- <small>°C</small></strong>
-                    </div>
-                    <div class="grafico">
-                        <canvas id="temperature-chart" aria-label="Gráfico de temperatura"></canvas>
-                    </div>
-                </article>
-
-                <article class="tarjeta lectura">
-                    <div>
-                        <p>Humedad</p>
-                        <strong id="sensor-humidity">--.- <small>%</small></strong>
-                    </div>
-                    <div class="grafico">
-                        <canvas id="humidity-chart" aria-label="Gráfico de humedad"></canvas>
-                    </div>
-                </article>
-
-                <article class="tarjeta sensibilidad">
-                    <p class="sobrelinea">AJUSTE DEL SENSOR</p>
-                    <h3>Sensibilidad</h3>
-                    <label for="sensibilidad">
-                        Nivel <output id="sensibilidad-valor">50%</output>
-                    </label>
-                    <input id="sensibilidad" type="range" min="0" max="100" value="50">
-                </article>
-            </div>
-        </section>
-
-        <footer>Panel local ESP32 <span>·</span> Nodo 32</footer>
-    </main>
+    </div>
 </body>
 </html>
