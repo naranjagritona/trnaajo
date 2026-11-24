@@ -59,6 +59,7 @@ body {
     transition: transform 0.2s;
 }
 
+/* agranda suavemente el icono del logo al pasar el cursor */
 .marca:hover .marca-icono {
     transform: scale(1.06);
 }
@@ -71,6 +72,7 @@ body {
     gap: 4px;
 }
 
+/* da espacio y color a cada enlace del menu */
 .menu-enlaces a {
     padding: 12px 20px;
     color: #cbd5e1;
@@ -79,6 +81,7 @@ body {
     transition: 0.15s;
 }
 
+/* resalta el enlace activo con el cursor */
 .menu-enlaces a:hover {
     background-color: #263952;
     color: #ffffff;
@@ -122,7 +125,7 @@ body {
     flex-wrap: wrap;
 }
 
-/* boton de conectar por serial */
+/* aspecto y comportamiento del boton de conexion serial */
 .serial-boton {
     padding: 8px 12px;
     border: 1px solid #94a3b8;
@@ -136,19 +139,23 @@ body {
     transition: 0.15s;
 }
 
+/* cambia el fondo al pasar el cursor */
 .serial-boton:hover {
     background-color: #cbd5e1;
 }
 
+/* reduce ligeramente el boton mientras se presiona */
 .serial-boton:active:not(:disabled) {
     transform: scale(0.96);
 }
 
+/* indica visualmente que el boton no esta disponible */
 .serial-boton:disabled {
     cursor: not-allowed;
     opacity: 0.6;
 }
 
+/* oculta el boton serial cuando no corresponde y el menu movil en escritorio */
 .serial-boton[hidden],
 .menu-boton {
     display: none;
@@ -161,11 +168,13 @@ body {
     font-size: 13px;
 }
 
+/* anima el indicador para mostrar actividad */
 @keyframes pulso-estado {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
 }
 
+/* punto animado junto al estado de conexion o actualizacion */
 .conexion i,
 .actualizacion i {
     display: inline-block;
@@ -177,6 +186,7 @@ body {
     animation: pulso-estado 2s infinite;
 }
 
+/* usa rojo en el indicador cuando no hay conexion */
 .conexion[data-state="disconnected"] i {
     background-color: #dc2626;
 }
@@ -189,6 +199,7 @@ body {
     padding-bottom: 40px;
 }
 
+/* separa visualmente el titulo de bienvenida */
 .portada {
     padding: 28px 0 18px;
 }
@@ -199,12 +210,14 @@ body {
     letter-spacing: 1px;
 }
 
+/* destaca el nombre del espacio controlado */
 .portada h1 {
     margin: 5px 0;
     font-size: 38px;
     color: #0f172a;
 }
 
+/* mantiene un color uniforme para textos secundarios */
 .bajada,
 .sensibilidad p,
 .estado-card p,
@@ -215,15 +228,18 @@ footer {
     color: #475569;
 }
 
+/* agrega espacio alrededor del indicador "En vivo" */
 .actualizacion {
     padding: 5px;
 }
 
+/* separa las secciones y deja margen al navegar a un ancla */
 .seccion {
     margin-bottom: 28px;
     scroll-margin-top: 25px;
 }
 
+/* alinea el titulo de cada seccion con su estado o informacion auxiliar */
 .titulo-seccion {
     display: flex;
     align-items: flex-end;
@@ -233,6 +249,7 @@ footer {
     padding-bottom: 6px;
 }
 
+/* da jerarquia visual a los titulos de seccion */
 .titulo-seccion h2 {
     margin: 0;
     font-size: 20px;
@@ -245,14 +262,17 @@ footer {
     gap: 12px;
 }
 
+/* distribuye las cuatro tarjetas de estado en columnas iguales */
 .resumen {
     grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
+/* distribuye los controles de dispositivos en tres columnas */
 .controles-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+/* organiza las lecturas ambientales en dos columnas */
 .ambiente-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -266,6 +286,7 @@ footer {
     transition: 0.15s;
 }
 
+/* eleva la tarjeta y agrega sombra al pasar el cursor */
 .tarjeta:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
@@ -279,10 +300,12 @@ footer {
     gap: 10px;
 }
 
+/* permite que el texto largo de una tarjeta se ajuste sin desbordarse */
 .estado-card > div {
     min-width: 0;
 }
 
+/* unifica margenes y tamanos de textos dentro de tarjetas */
 .estado-card p,
 .lectura p {
     margin: 0 0 5px;
@@ -304,6 +327,7 @@ footer {
     transition: transform 0.18s;
 }
 
+/* amplia el icono cuando se interactua con su tarjeta */
 .tarjeta:hover .icono {
     transform: scale(1.08);
 }
@@ -313,6 +337,7 @@ footer {
     background-color: #ede9fe;
 }
 
+/* variante de color para acciones de alarma */
 .naranja {
     color: #b45309;
     background-color: #fef3c7;
@@ -322,6 +347,7 @@ footer {
     margin-bottom: 15px;
 }
 
+/* jerarquia de texto dentro de la cabecera de cada dispositivo */
 .cabecera-tarjeta p {
     margin: 0 0 3px;
     font-size: 11px;
@@ -343,6 +369,7 @@ footer {
     flex: 1;
 }
 
+/* hace que cada boton ocupe todo el ancho disponible del formulario */
 .botones button {
     width: 100%;
     padding: 8px;
@@ -354,10 +381,12 @@ footer {
     transition: 0.12s;
 }
 
+/* oscurece ligeramente el boton al pasar el cursor */
 .botones button:hover:not(:disabled) {
     filter: brightness(0.95);
 }
 
+/* indica la presion del boton con una pequena reduccion */
 .botones button:active:not(:disabled) {
     transform: scale(0.94);
 }
@@ -380,12 +409,13 @@ footer {
     border-color: #b91c1c;
 }
 
-/* alerta llamativa cuando se dispara */
+/* hace parpadear el contorno para llamar la atencion */
 @keyframes pulso-alarma {
     0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.35); }
     50% { box-shadow: 0 0 12px 3px rgba(220, 38, 38, 0.65); }
 }
 
+/* marca el estado disparado en la tarjeta y en sus controles */
 #alarm-card[data-state="disparada"],
 #alarm-control-card[data-state="disparada"] {
     border: 2px solid #dc2626;
@@ -394,6 +424,7 @@ footer {
     animation: pulso-alarma 1s infinite;
 }
 
+/* identifica con azul la alarma encendida */
 #alarm-card[data-state="prendida"] {
     border-color: #0284c7;
 }
@@ -411,11 +442,13 @@ footer {
     font-size: 14px;
 }
 
+/* reserva altura para los graficos de temperatura y humedad */
 .grafico {
     height: 65px;
     margin-top: 10px;
 }
 
+/* adapta el canvas al espacio de su tarjeta */
 .grafico canvas {
     width: 100%;
     height: 100%;
@@ -425,22 +458,26 @@ footer {
     grid-column: 1 / -1;
 }
 
+/* separa la etiqueta y el valor del control de sensibilidad */
 .sensibilidad label {
     display: flex;
     justify-content: space-between;
     margin: 12px 0 6px;
 }
 
+/* destaca el porcentaje seleccionado */
 .sensibilidad output {
     color: #0369a1;
     font-weight: bold;
 }
 
+/* estira el control deslizante a todo el ancho de la tarjeta */
 .sensibilidad input {
     width: 100%;
     cursor: pointer;
 }
 
+/* da formato al pie de pagina */
 footer {
     padding: 20px 0 10px;
     font-size: 13px;
@@ -450,27 +487,31 @@ footer {
 
 /* pantallas medianas */
 @media (max-width: 900px) {
+    /* reduce las tarjetas de estado a dos columnas */
     .resumen {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    /* apila los controles para que sus botones tengan mas espacio */
     .controles-grid {
         grid-template-columns: 1fr;
     }
 }
 
-/* celulares */
+/* animacion de entrada del menu lateral en celulares */
 @keyframes aparecer-menu {
     from { opacity: 0; transform: translateX(-16px); }
     to { opacity: 1; transform: translateX(0); }
 }
 
 @media (max-width: 768px) {
+    /* deja el contenido como unico sector de la cuadrícula */
     .layout-principal {
         grid-template-columns: minmax(0, 1fr);
         grid-template-areas: "contenido";
     }
 
+    /* oculta el menu fuera del lienzo; JavaScript lo muestra al abrirlo */
     .barra-lateral {
         position: fixed;
         top: 0;
@@ -482,20 +523,24 @@ footer {
         box-shadow: 4px 0 15px rgba(0, 0, 0, 0.25);
     }
 
+    /* muestra el menu y anima su entrada cuando se abre */
     .barra-lateral.abierto {
         display: flex;
         animation: aparecer-menu 0.2s;
     }
 
+    /* quita cualquier margen lateral en la vista angosta */
     .contenido-principal {
         margin-left: 0;
     }
 
+    /* ajusta la barra superior al ancho reducido */
     .barra-superior {
         padding: 10px 14px;
         flex-wrap: wrap;
     }
 
+    /* muestra y da formato al boton que abre el menu lateral */
     .menu-boton {
         display: inline-flex;
         align-items: center;
@@ -512,31 +557,37 @@ footer {
         transition: 0.12s;
     }
 
+    /* responde visualmente cuando se presiona el menu */
     .menu-boton:active {
         transform: scale(0.95);
     }
 
+    /* compacta los controles de conexion para celulares */
     .barra-acciones {
         margin-left: auto;
         gap: 8px;
         flex-wrap: nowrap;
     }
 
+    /* reduce el boton serial en pantallas pequenas */
     .serial-boton {
         padding: 7px 10px;
         font-size: 12px;
     }
 
+    /* ajusta el texto de estado para que no desborde la barra */
     .conexion {
         font-size: 11px;
         max-width: 130px;
         line-height: 1.2;
     }
 
+    /* apila las lecturas ambientales en una sola columna */
     .ambiente-grid {
         grid-template-columns: 1fr;
     }
 
+    /* reduce el titulo de portada en celulares */
     .portada h1 {
         font-size: 32px;
     }
@@ -544,10 +595,12 @@ footer {
 
 /* pantallas muy chicas */
 @media (max-width: 480px) {
+    /* muestra una tarjeta de estado por fila */
     .resumen {
         grid-template-columns: 1fr;
     }
 
+    /* usa una fila para el boton serial y el estado de conexion */
     .barra-acciones {
         width: 100%;
         justify-content: space-between;
@@ -555,6 +608,7 @@ footer {
         padding-top: 6px;
     }
 
+    /* permite que el estado use el ancho disponible */
     .conexion {
         max-width: none;
     }
